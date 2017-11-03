@@ -1,0 +1,47 @@
+#!/usr/bin/env expect
+
+proc usage {status} {
+    puts "./script.exp \[OPTIONS\] \<host\>"
+    puts "Options:"
+    puts "    -f, --flag"
+    echo "        Example flag"
+    puts "    -f, --flag=FLAG"
+    echo "        Example for storing cli arg"
+    puts "    -h, --help"
+    puts "        Display this help message"
+    exit $status
+}
+
+# Parse input
+set params ""
+set flag false
+
+for {set arg 0} {$arg < $argc} {incr arg} {
+    switch [lindex $argv $arg] {
+        "--" {
+            incr arg; while {$arg < $argc} {
+                set params [concat $params [lindex $argv $arg]]
+                incr arg
+            }
+            break
+        }
+        "-f" -
+        "--flag" {set flag true}
+        "-f" -
+        "--flag" {
+            incr arg; if {$arg == $argc} {usage 1}
+            set flag [lindex $argv $arg]
+        }
+        "-h" -
+        "--help" {usage 0}
+        default {
+            set params [concat $params [lindex $argv $arg]]
+        }
+    }
+}
+
+set argc [llength $params]
+set argv $params
+
+# Input validation
+if {$argc != 0} {usage 2}

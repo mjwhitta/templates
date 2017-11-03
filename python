@@ -1,0 +1,52 @@
+#!/usr/bin/env python2
+
+import argparse
+import sys
+
+
+def main(options):
+    pass
+
+
+# Parse args
+def parse():
+    parser = argparse.ArgumentParser(
+        add_help = False,
+        description = ""
+    )
+    parser.add_argument(
+        "-h",
+        "--help",
+        help = "Display this help message",
+        action="store_true"
+    )
+    parser.add_argument(
+        "-s",
+        "--store",
+        help = "Example for storing cli arg"
+    )
+    parser.add_argument(
+        "arg1",
+        metavar="arg1",
+        nargs="?",
+        help = "Optional argument"
+    )
+    args = parser.parse_args()
+
+    options = {}
+
+    if (args.help):
+        parser.print_help()
+        sys.exit(0)
+    elif (args.store):
+        options["store"] = args.store
+    else:
+        parser.print_help()
+        sys.exit(1)
+
+    return options
+
+
+if __name__ == "__main__":
+    options = parse()
+    main(options)
