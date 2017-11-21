@@ -30,7 +30,8 @@ function bash_multi() {
         case "$1" in
             "--") shift && args+=("$@") && break ;;
             "-f"|"--flag") flag="true" ;;
-            "-f"|"--flag") shift; [[ $# -gt 0 ]] || usage 1
+            "-f"|"--flag")
+                shift; [[ $# -eq 0 ]] && bash_multi_usage && return 1
                 flag="--flag $1"
                 ;;
             "-h"|"--help") bash_multi_usage; return 0 ;;
