@@ -2,6 +2,9 @@
 
 usage() {
     echo "Usage: ${0/*\//} [OPTIONS]"
+    echo
+    echo "TODO"
+    echo
     echo "Options:"
     echo "    -f, --flag"
     echo "        Example flag"

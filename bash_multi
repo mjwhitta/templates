@@ -2,12 +2,16 @@
 
 function bash_multi() {
     bash_multi_cleanup() {
+        unset args flag
         unset -f bash_multi_cleanup
         unset -f bash_multi_usage
     }
 
     bash_multi_usage() {
         echo "Usage: bash_multi [OPTIONS]"
+        echo
+        echo "TODO"
+        echo
         echo "Options:"
         echo "    -f, --flag"
         echo "        Example flag"
