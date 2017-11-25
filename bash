@@ -8,8 +8,10 @@ usage() {
     echo "Options:"
     echo "    -f, --flag"
     echo "        Example flag"
+    echo
     echo "    -f, --flag=FLAG"
     echo "        Example for storing cli arg"
+    echo
     echo "    -h, --help"
     echo "        Display this help message"
     echo

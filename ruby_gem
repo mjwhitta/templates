@@ -19,17 +19,17 @@ def parse(args)
     options = Hash.new
     options["verbose"] = false
 
-    info = ""
+    info = "TODO"
 
     parser = OptionParser.new do |opts|
         opts.summary_width = 32
 
         opts.banner = "Usage: #{File.basename($0)} [OPTIONS]"
 
-        opts.on("", "DESCRIPTION")
+        opts.on("")
 
-        info.scan(/\S.{0,76}\S(?=\s|$)|\S+/).each do |line|
-            opts.on("    #{line}")
+        info.scan(/\S.{0,80}\S(?=\s|$)|\S+/).each do |line|
+            opts.on("#{line}")
         end
 
         opts.on("", "OPTIONS")
