@@ -55,7 +55,7 @@ def parse(args)
     end
 
     begin
-        parser.parse!
+        parser.parse!(args)
     rescue OptionParser::InvalidOption => e
         puts e.message
         puts parser
@@ -74,7 +74,10 @@ def parse(args)
         exit Exit::AMBIGUOUS_ARGUMENT
     end
 
-    if (!args.empty?)
+    if (args.empty?)
+        puts parser
+        exit Exit::MISSING_ARGUMENT
+    elsif (!args.empty?)
         puts parser
         exit Exit::EXTRA_ARGUMENTS
     end
