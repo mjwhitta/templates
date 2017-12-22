@@ -13,14 +13,9 @@ function bash_multi() {
         echo "TODO"
         echo
         echo "Options:"
-        echo "    -f, --flag"
-        echo "        Example flag"
-        echo
-        echo "    -f, --flag=FLAG"
-        echo "        Example for storing cli arg"
-        echo
-        echo "    -h, --help"
-        echo "        Display this help message"
+        echo "    -f, --flag         Example flag"
+        echo "    -f, --flag=FLAG    Example for storing cli arg"
+        echo "    -h, --help         Display this help message"
         echo
         bash_multi_cleanup
     }
@@ -43,7 +38,7 @@ function bash_multi() {
     done
     [[ -z ${args[@]} ]] || set -- "${args[@]}"
 
-    [[ $# -eq 0 ]] && bash_multi_usage && return 1
+    [[ $# -eq 0 ]] && bash_multi_usage && return 2
 
     for arg in "$@"; do echo "$arg"; done
 

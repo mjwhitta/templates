@@ -6,14 +6,9 @@ proc usage {status} {
     puts "TODO"
     puts ""
     puts "Options:"
-    puts "    -f, --flag"
-    puts "        Example flag"
-    puts ""
-    puts "    -f, --flag=FLAG"
-    puts "        Example for storing cli arg"
-    puts ""
-    puts "    -h, --help"
-    puts "        Display this help message"
+    puts "    -f, --flag         Example flag"
+    puts "    -f, --flag=FLAG    Example for storing cli arg"
+    puts "    -h, --help         Display this help message"
     puts ""
     exit $status
 }

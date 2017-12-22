@@ -10,21 +10,13 @@ usage() {
     echo "TODO"
     echo
     echo "Options:"
-    echo "    -f, --flag"
-    echo "        Example flag"
-    echo
-    echo "    -f, --flag=FLAG"
-    echo "        Example for storing cli arg"
-    echo
-    echo "    -h, --help"
-    echo "        Display this help message"
-    echo
-    echo "    -p, --parallel"
-    echo "        Run using parallel"
-    echo
-    echo "    -t, --threads=NUM"
-    echo "        Use the specied number of thread if running in"
-    echo "        parallel (default: $threads)"
+    echo "    -f, --flag           Example flag"
+    echo "    -f, --flag=FLAG      Example for storing cli arg"
+    echo "    -h, --help           Display this help message"
+    echo "    -p, --parallel       Run using parallel"
+    echo "    -t, --threads=NUM    Use the specied number of threads"
+    echo "                         if running in parallel (default:"
+    echo "                         $threads)"
     echo
     exit $1
 }
