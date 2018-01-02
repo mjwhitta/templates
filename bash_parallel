@@ -31,7 +31,10 @@ while [[ $# -gt 0 ]]; do
         "-f"|"--flag") flag="true" ;;
         "-f"|"--flag"*)
             case "$1" in
-                *"="*) arg="${1/*=/}" ;;
+                "--"*"="*)
+                    arg="$(echo "$1" | sed -r "s/[^=]+=//")"
+                    [[ -n $arg ]] || usage 1
+                    ;;
                 *) shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
             esac
             flag="--flag $arg"

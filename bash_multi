@@ -29,7 +29,10 @@ function bash_multi() {
             "-f"|"--flag") flag="true" ;;
             "-f"|"--flag"*)
                 case "$1" in
-                    *"="*) arg="${1/*=/}" ;;
+                    "--"*"="*)
+                        arg="$(echo "$1" | sed -r "s/[^=]+=//")"
+                        [[ -n $arg ]] || usage 1
+                        ;;
                     *)
                         shift
                         [[ $# -eq 0 ]] && bash_multi_usage && return 1
