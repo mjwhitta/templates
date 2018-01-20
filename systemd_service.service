@@ -1,0 +1,13 @@
+[Unit]
+Description=TODO
+
+[Service]
+Environment="HOME=TODO"
+ExecReload=TODO bash command
+ExecStart=TODO bash command
+ExecStop=TODO bash command
+Group=TODO
+User=TODO
+
+[Install]
+WantedBy=multi-user.target
