@@ -59,7 +59,7 @@ done
 
 [[ $# -ge 1 ]] || usage 2
 
-if [[ -n $parallel ]]
+if [[ -n $parallel ]]; then
     if [[ -z $(command -v parallel) ]] ||
        [[ -z $(command -v env_parallel.bash) ]]
     then
