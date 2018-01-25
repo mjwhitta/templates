@@ -57,7 +57,7 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -z ${args[@]} ]] || set -- "${args[@]}"
 
-[[ $# -ge 1 ]] || usage 1
+[[ $# -ge 1 ]] || usage 2
 
 if [[ -n $parallel ]]
     if [[ -z $(command -v parallel) ]] ||
