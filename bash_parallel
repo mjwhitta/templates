@@ -41,8 +41,15 @@ while [[ $# -gt 0 ]]; do
             ;;
         "-h"|"--help") usage 0 ;;
         "-p"|"--parallel") parallel="true" ;;
-        "-t"|"--threads") shift; [[ $# -gt 0 ]] || usage 1
-            threads="$1"
+        "-t"|"--threads"*)
+            case "$1" in
+                "--"*"="*)
+                    arg="$(echo "$1" | sed -r "s/[^=]+=//")"
+                    [[ -n $arg ]] || usage 1
+                    ;;
+                *) shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
+            esac
+            threads="$arg"
             ;;
         *) args+=("$1") ;;
     esac
@@ -52,9 +59,13 @@ done
 
 [[ $# -ge 1 ]] || usage 1
 
-if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
-    echo "Parallel is not installed, falling back to default behavior"
-    unset parallel
+if [[ -n $parallel ]]
+    if [[ -z $(command -v parallel) ]] ||
+       [[ -z $(command -v env_parallel.bash) ]]
+    then
+        echo "Parallel is not installed, using default behavior"
+        unset parallel
+    fi
 fi
 
 if [[ -n $parallel ]]; then
