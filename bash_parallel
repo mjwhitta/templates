@@ -31,10 +31,7 @@ while [[ $# -gt 0 ]]; do
         "-f"|"--flag") flag="true" ;;
         "-f"|"--flag"*)
             case "$1" in
-                "--"*"="*)
-                    arg="$(echo "$1" | sed -r "s/[^=]+=//")"
-                    [[ -n $arg ]] || usage 1
-                    ;;
+                "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
                 *) shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
             esac
             flag="--flag $arg"
@@ -43,10 +40,7 @@ while [[ $# -gt 0 ]]; do
         "-p"|"--parallel") parallel="true" ;;
         "-t"|"--threads"*)
             case "$1" in
-                "--"*"="*)
-                    arg="$(echo "$1" | sed -r "s/[^=]+=//")"
-                    [[ -n $arg ]] || usage 1
-                    ;;
+                "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
                 *) shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
             esac
             threads="$arg"
