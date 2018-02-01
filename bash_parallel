@@ -70,7 +70,7 @@ else
     let "count = 1"
     let "total = ${#args[@]}"
     for arg in "${args[@]}"; do
-        echo -e "$count/$total\r\e[1A"
+        echo -en "[$count/$total]                              \r" >&2
         todo $arg
         let "count += 1"
     done; unset arg
