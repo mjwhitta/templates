@@ -63,23 +63,25 @@ if [[ -n $parallel ]]; then
     if [[ -z $(command -v parallel) ]] ||
        [[ -z $(command -v env_parallel.bash) ]]
     then
-        echo "Parallel is not installed, using default behavior"
+        warn "Parallel is not installed, using default behavior"
         unset parallel
     fi
 fi
 
+declare -a dataset
+dataset=($@)
+let "total = ${#dataset[@]}"
+
 if [[ -n $parallel ]]; then
     source $(command -v env_parallel.bash)
-    info "$# jobs to run"
-    env_parallel -P $threads todo {} ::: $@
-    # env_parallel --eta -P $threads todo {} ::: $@
+    info "$total jobs to run"
+    env_parallel -P $threads todo {} ::: ${dataset[@]}
+    # env_parallel --eta -P $threads todo {} ::: ${dataset[@]}
 else
-    args=($@)
     let "count = 1"
-    let "total = ${#args[@]}"
-    for arg in "${args[@]}"; do
+    for data in "${dataset[@]}"; do
         echo -en "[$count/$total]                              \r" >&2
-        todo $arg
+        todo "$data"
         let "count += 1"
-    done; unset arg
+    done; unset data
 fi
