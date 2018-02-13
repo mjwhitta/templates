@@ -68,8 +68,7 @@ if [[ -n $parallel ]]; then
     fi
 fi
 
-declare -a dataset
-dataset=($@)
+declare -a dataset=($@)
 let "total = ${#dataset[@]}"
 
 if [[ -n $parallel ]]; then
