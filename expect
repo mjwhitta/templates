@@ -49,7 +49,7 @@ if {$argc != 0} {usage 2}
 
 expect {
     "prompt1? " {send "Y\r"; exp_continue}
-    "prompt2? " {send "N\r";}
+    "prompt2? " {send "N\r"}
     "error" {exit}
 }
 
