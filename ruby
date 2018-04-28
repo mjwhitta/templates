@@ -85,13 +85,17 @@ def parse(args)
     return options
 end
 
-options = parse(ARGV)
+begin
+    options = parse(ARGV)
+rescue Interrupt
+    # Exit gracefully on ^C
+    exit Exit::GOOD
+end
 
 begin
     # Do stuff here
 rescue Interrupt
-    # ^C
-    # Exit gracefully
+    # Exit gracefully on ^C
 rescue Errno::EPIPE
     # Do nothing. This can happen if piping to another program such as
     # less. Usually if less is closed before we're done with STDOUT.
