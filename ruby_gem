@@ -95,7 +95,7 @@ begin
     options = parse(ARGV)
 rescue Interrupt
     # Exit gracefully on ^C
-    exit Exit::GOOD
+    exit TodoExit::GOOD
 end
 
 begin
