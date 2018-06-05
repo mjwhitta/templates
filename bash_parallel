@@ -4,10 +4,6 @@ err() { echo -e "\e[31m[!] $@\e[0m"; }
 
 info() { echo -e "\e[32m[+] $@\e[0m"; }
 
-todo() {
-    info "$1" # TODO
-}
-
 usage() {
     echo "Usage: ${0/*\//} [OPTIONS] <arg1>... [argN]"
     echo
@@ -59,28 +55,32 @@ done
 
 [[ $# -ge 1 ]] || usage 2
 
-if [[ -n $parallel ]]; then
-    if [[ -z $(command -v parallel) ]] ||
-       [[ -z $(command -v env_parallel.bash) ]]
-    then
-        warn "Parallel is not installed, using default behavior"
-        unset parallel
-    fi
+if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
+    warn "Parallel is not installed, using default behavior"
+    unset parallel
 fi
+
+cat >/tmp/todo.sh <<EOF
+#!/usr/bin/env bash
+err() { echo -e "\\e[31m[!] \$@\\e[0m"; }
+info() { echo -e "\\e[32m[+] \$@\\e[0m"; }
+warn() { echo -e "\\e[33m[-] \$@\\e[0m"; }
+info "\$1" # TODO
+EOF
+chmod 700 /tmp/todo.sh
 
 declare -a dataset=($@)
 let "total = ${#dataset[@]}"
 
 if [[ -n $parallel ]]; then
-    source $(command -v env_parallel.bash)
     info "$total jobs to run"
-    env_parallel -P $threads todo {} ::: ${dataset[@]}
-    # env_parallel --eta -P $threads todo {} ::: ${dataset[@]}
+    parallel -P $threads /tmp/todo.sh {} ::: ${dataset[@]}
+    # parallel --eta -P $threads /tmp/todo.sh {} ::: ${dataset[@]}
 else
     let "count = 1"
     for data in "${dataset[@]}"; do
         echo -en "[$count/$total]                              \r" >&2
-        todo "$data"
+        /tmp/todo.sh "$data"
         let "count += 1"
     done; unset data
 fi
