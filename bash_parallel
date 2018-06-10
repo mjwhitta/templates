@@ -80,17 +80,19 @@ if [[ -z ${dataset[@]} ]]; then
 fi
 let "total = ${#dataset[@]}"
 
-if [[ -n $parallel ]]; then
-    info "$total jobs to run"
-    parallel -P $threads /tmp/todo {} ::: ${dataset[@]}
-    # parallel --eta -P $threads /tmp/todo {} ::: ${dataset[@]}
-else
-    let "count = 1"
-    for data in "${dataset[@]}"; do
-        echo -en "[$count/$total]                              \r" >&2
-        /tmp/todo "$data"
-        let "count += 1"
-    done; unset data
+if [[ $total -gt 0 ]]; then
+    if [[ -n $parallel ]]; then
+        info "$total jobs to run"
+        parallel -P $threads /tmp/todo {} ::: ${dataset[@]}
+        # parallel --eta -P $threads /tmp/todo {} ::: ${dataset[@]}
+    else
+        let "count = 1"
+        for data in "${dataset[@]}"; do
+            echo -en "[$count/$total]                          \r" >&2
+            /tmp/todo "$data"
+            let "count += 1"
+        done; unset data
+    fi
 fi
 
 clean
