@@ -3,12 +3,9 @@
 import argparse
 import sys
 
-
 def main(options):
     pass
 
-
-# Parse args
 def parse():
     parser = argparse.ArgumentParser(
         add_help=False,
@@ -40,12 +37,8 @@ def parse():
         sys.exit(0)
     elif (args.store):
         options["store"] = args.store
-    else:
-        parser.print_help()
-        sys.exit(1)
 
     return options
-
 
 if __name__ == "__main__":
     options = parse()
