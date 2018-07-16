@@ -84,7 +84,7 @@ let "total = ${#dataset[@]}"
 if [[ $total -gt 0 ]]; then
     if [[ -n $parallel ]]; then
         info "$total jobs to run"
-        parallel -P $threads $script {} ::: ${dataset[@]}
+        parallel --no-run-if-empty -P $threads $script {} ::: ${dataset[@]}
         # parallel --eta -P $threads $script {} ::: ${dataset[@]}
     else
         let "count = 1"
