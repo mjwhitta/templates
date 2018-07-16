@@ -83,9 +83,34 @@ let "total = ${#dataset[@]}"
 
 if [[ $total -gt 0 ]]; then
     if [[ -n $parallel ]]; then
+        # Math
+        left="$total"
+        marker="0"
+        maxdata="$(
+            parallel --show-limit --no-run-if-empty </dev/null | \
+            awk '/Maximal used/ {print $NF; exit}'
+        )"
+        let "remainder = total % maxdata"
+        round="0"
+        let "rounds = total / maxdata"
+        [[ $remainder -eq 0 ]] || let "rounds += 1"
+
+        # Loop thru rounds
         info "$total jobs to run"
-        parallel --no-run-if-empty -P $threads $script {} ::: ${dataset[@]}
-        # parallel --eta -P $threads $script {} ::: ${dataset[@]}
+        [[ $rounds -eq 1 ]] || info "Splitting into $rounds rounds"
+        while [[ $left -gt 0 ]]; do
+            let "round += 1"
+            [[ $rounds -eq 1 ]] || warn "Round $round"
+
+            increment="$left"
+            [[ $left -le $maxdata ]] || increment="$maxdata"
+
+            parallel --no-run-if-empty -P $threads $script {} ::: \
+                ${dataset[@]:$marker:$increment}
+
+            let "left -= increment"
+            let "marker += increment"
+        done
     else
         let "count = 1"
         for data in "${dataset[@]}"; do
