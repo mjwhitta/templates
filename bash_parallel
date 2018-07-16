@@ -82,6 +82,7 @@ fi
 let "total = ${#dataset[@]}"
 
 if [[ $total -gt 0 ]]; then
+    info "$total jobs to run"
     if [[ -n $parallel ]]; then
         # Math
         left="$total"
@@ -96,7 +97,6 @@ if [[ $total -gt 0 ]]; then
         [[ $remainder -eq 0 ]] || let "rounds += 1"
 
         # Loop thru rounds
-        info "$total jobs to run"
         [[ $rounds -eq 1 ]] || info "Splitting into $rounds rounds"
         while [[ $left -gt 0 ]]; do
             let "round += 1"
