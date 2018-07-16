@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-clean() { rm -f /tmp/todo; }
+clean() { rm -f $script; exit 0; }
 
 err() { echo -e "\e[31m[!] $@\e[0m"; }
 
@@ -16,9 +16,9 @@ usage() {
     echo "    -f, --flag=FLAG      Example for storing cli arg"
     echo "    -h, --help           Display this help message"
     echo "    -p, --parallel       Run using parallel"
+    local default="(default: $threads)"
     echo "    -t, --threads=NUM    Use the specied number of threads"
-    echo "                         if running in parallel (default:"
-    echo "                         $threads)"
+    echo "                         if running in parallel $default"
     echo
     exit $1
 }
@@ -62,16 +62,17 @@ if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
     unset parallel
 fi
 
+script="/tmp/${0/*\//}"
 trap clean SIGINT
 
-cat >/tmp/todo <<EOF
+cat >$script <<EOF
 #!/usr/bin/env bash
 err() { echo -e "\\e[31m[!] \$@\\e[0m"; }
 info() { echo -e "\\e[32m[+] \$@\\e[0m"; }
 warn() { echo -e "\\e[33m[-] \$@\\e[0m"; }
 info "\$1" # TODO
 EOF
-chmod 700 /tmp/todo
+chmod 700 $script
 
 declare -a dataset=($@)
 if [[ -z ${dataset[@]} ]]; then
@@ -83,13 +84,13 @@ let "total = ${#dataset[@]}"
 if [[ $total -gt 0 ]]; then
     if [[ -n $parallel ]]; then
         info "$total jobs to run"
-        parallel -P $threads /tmp/todo {} ::: ${dataset[@]}
-        # parallel --eta -P $threads /tmp/todo {} ::: ${dataset[@]}
+        parallel -P $threads $script {} ::: ${dataset[@]}
+        # parallel --eta -P $threads $script {} ::: ${dataset[@]}
     else
         let "count = 1"
         for data in "${dataset[@]}"; do
             echo -en "[$count/$total]                          \r" >&2
-            /tmp/todo "$data"
+            $script "$data"
             let "count += 1"
         done; unset data
     fi
