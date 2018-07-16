@@ -67,9 +67,9 @@ trap clean SIGINT
 
 cat >$script <<EOF
 #!/usr/bin/env bash
-err() { echo -e "\\e[31m[!] \$@\\e[0m"; }
-info() { echo -e "\\e[32m[+] \$@\\e[0m"; }
-warn() { echo -e "\\e[33m[-] \$@\\e[0m"; }
+err() { echo -e "\\r\\e[31m[!] \$@\\e[0m$(tput el)"; }
+info() { echo -e "\\r\\e[32m[+] \$@\\e[0m$(tput el)"; }
+warn() { echo -e "\\r\\e[33m[-] \$@\\e[0m$(tput el)"; }
 info "\$1" # TODO
 EOF
 chmod 700 $script
@@ -87,7 +87,7 @@ if [[ $total -gt 0 ]]; then
         left="$total"
         marker="0"
         maxdata="$(
-            parallel --show-limit --no-run-if-empty </dev/null | \
+            parallel -r --show-limit </dev/null | \
             awk '/Maximal used/ {print $NF; exit}'
         )"
         let "remainder = total % maxdata"
@@ -105,7 +105,7 @@ if [[ $total -gt 0 ]]; then
             increment="$left"
             [[ $left -le $maxdata ]] || increment="$maxdata"
 
-            parallel --no-run-if-empty -P $threads $script {} ::: \
+            parallel --bar -P $threads -r $script {} ::: \
                 ${dataset[@]:$marker:$increment}
 
             let "left -= increment"
@@ -113,8 +113,9 @@ if [[ $total -gt 0 ]]; then
         done
     else
         let "count = 1"
+        clear="$(tput el)"
         for data in "${dataset[@]}"; do
-            echo -en "[$count/$total]                          \r" >&2
+            echo -en "\r[$count/$total]$clear" >&2
             $script "$data"
             let "count += 1"
         done; unset data
