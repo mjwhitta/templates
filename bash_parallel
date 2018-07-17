@@ -96,52 +96,49 @@ chmod 700 $script
 info "Processing dataset for jobs"
 
 declare -a dataset=($@)
-if [[ -z ${dataset[@]} ]]; then
+let "total = ${#dataset[@]}"
+
+if [[ $total -eq 0 ]]; then
     err "No dataset provided"
     exit 3
 fi
-let "total = ${#dataset[@]}"
 
-if [[ $total -gt 0 ]]; then
-    info "$total jobs to run"
-    if [[ -n $parallel ]]; then
-        # Math
-        left="$total"
-        marker="0"
-        maxdata="$(
-            parallel -r --show-limit </dev/null | \
-            awk '/Maximal used/ {print $NF; exit}'
-        )"
-        let "remainder = total % maxdata"
-        round="0"
-        let "rounds = total / maxdata"
-        [[ $remainder -eq 0 ]] || let "rounds += 1"
+info "$total jobs to run"
+if [[ -n $parallel ]]; then
+    # Math
+    left="$total"
+    marker="0"
+    maxdata="$(
+        parallel -r --show-limit </dev/null | \
+        awk '/Maximal used/ {print $NF; exit}'
+    )"
+    let "remainder = total % maxdata"
+    round="0"
+    let "rounds = total / maxdata"
+    [[ $remainder -eq 0 ]] || let "rounds += 1"
 
-        # Loop thru rounds
-        [[ $rounds -eq 1 ]] || info "Splitting into $rounds rounds"
-        while [[ $left -gt 0 ]]; do
-            let "round += 1"
-            [[ $rounds -eq 1 ]] || warn "Round $round"
+    # Loop thru rounds
+    [[ $rounds -eq 1 ]] || info "Splitting into $rounds rounds"
+    while [[ $left -gt 0 ]]; do
+        let "round += 1"
+        [[ $rounds -eq 1 ]] || warn "Round $round"
 
-            increment="$left"
-            [[ $left -le $maxdata ]] || increment="$maxdata"
+        increment="$left"
+        [[ $left -le $maxdata ]] || increment="$maxdata"
 
-            parallel --bar --lb -P $threads -r $script {} ::: \
-                ${dataset[@]:$marker:$increment}
+        parallel --bar --lb -P $threads -r $script {} ::: \
+            ${dataset[@]:$marker:$increment}
 
-            let "left -= increment"
-            let "marker += increment"
-        done
-    else
-        let "count = 1"
-        for data in "${dataset[@]}"; do
-            echo -en "\r[$count/$total]\e[K" >&2
-            $script "$data"
-            let "count += 1"
-        done; unset data
-    fi
+        let "left -= increment"
+        let "marker += increment"
+    done
 else
-    warn "Empty dataset"
+    let "count = 1"
+    for data in "${dataset[@]}"; do
+        echo -en "\r[$count/$total]\e[K" >&2
+        $script "$data"
+        let "count += 1"
+    done; unset data
 fi
 
 clean
