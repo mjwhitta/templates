@@ -116,7 +116,7 @@ if [[ $total -gt 0 ]]; then
         let "count = 1"
         clear="$(tput el)"
         for data in "${dataset[@]}"; do
-            echo -en "[$count/$total]$clear" >&2
+            echo -en "\r[$count/$total]$clear" >&2
             $script "$data"
             let "count += 1"
         done; unset data
