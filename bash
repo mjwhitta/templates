@@ -14,7 +14,7 @@ usage() {
 }
 
 declare -a args
-unset flag
+unset flag help
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -27,11 +27,12 @@ while [[ $# -gt 0 ]]; do
             esac
             flag="--flag $arg"
             ;;
-        "-h"|"--help") usage 0 ;;
+        "-h"|"--help") help="true" ;;
         *) args+=("$1") ;;
     esac
     shift
 done
 [[ -z ${args[@]} ]] || set -- "${args[@]}"
 
+[[ -z $help ]] || usage 0
 [[ $# -eq 0 ]] || usage 2

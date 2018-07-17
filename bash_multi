@@ -2,7 +2,7 @@
 
 function bash_multi() {
     bash_multi_cleanup() {
-        unset args flag
+        unset args flag help
         unset -f bash_multi_cleanup bash_multi_usage
     }
 
@@ -20,7 +20,7 @@ function bash_multi() {
     }
 
     declare -a args
-    unset flag
+    unset flag help
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -40,13 +40,14 @@ function bash_multi() {
                 esac
                 flag="--flag $arg"
                 ;;
-            "-h"|"--help") bash_multi_usage; return 0 ;;
+            "-h"|"--help") help="true" ;;
             *) args+=("$1") ;;
         esac
         shift
     done
     [[ -z ${args[@]} ]] || set -- "${args[@]}"
 
+    [[ -n $help ]] && bash_multi_usage && return 0
     [[ $# -eq 0 ]] && bash_multi_usage && return 2
 
     for arg in "$@"; do echo "$arg"; done
