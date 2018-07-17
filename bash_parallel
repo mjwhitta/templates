@@ -131,6 +131,7 @@ if [[ -n $parallel ]]; then
 
         let "left -= increment"
         let "marker += increment"
+        echo -en "\e[1A\e[K"
     done
 else
     let "count = 1"
