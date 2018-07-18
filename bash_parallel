@@ -58,36 +58,38 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -z ${args[@]} ]] || set -- "${args[@]}"
 
+# Check for valid params and missing dependencies
 [[ -z $help ]] || usage 0
 [[ $# -ge 1 ]] || usage 2
 
+# Determine parallel situation
 if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
     warn "Parallel is not installed, using default behavior"
     unset parallel
 fi
 
+# Cite if needed
 if [[ -n $parallel ]] && [[ ! -f $HOME/.parallel/will-cite ]]; then
     mkdir -p $HOME/.parallel
     parallel --citation
 fi
 
+# Script used by parallel
 script="/tmp/${0/*\//}.parallel"
 trap clean SIGINT
 
 cat >$script <<EOF
 #!/usr/bin/env bash
-err() {
-$([[ -z $clr ]] || echo "    echo -en \"\\e[31m\"")
-    echo -e "\\r[!] \$@\\e[0m\\e[K"
-}
-info() {
-$([[ -z $clr ]] || echo "    echo -en \"\\e[32m\"")
-    echo -e "\\r[+] \$@\\e[0m\\e[K"
-}
-warn() {
-$([[ -z $clr ]] || echo "    echo -en \"\\e[33m\"")
-    echo -e "\\r[-] \$@\\e[0m\\e[K"
-}
+
+err() {$([[ -z $clr ]] || echo " echo -en \"\\e[31m\";") \
+echo -e "\\r[!] \$@\\e[0m\\e[K"; }
+
+info() {$([[ -z $clr ]] || echo " echo -en \"\\e[32m\";") \
+echo -e "\\r[+] \$@\\e[0m\\e[K"; }
+
+warn() {$([[ -z $clr ]] || echo " echo -en \"\\e[33m\";") \
+echo -e "\\r[-] \$@\\e[0m\\e[K"; }
+
 let "timeout = RANDOM % 5"
 sleep \$timeout && info "\$1" # TODO
 EOF
