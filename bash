@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 long_opt() {
-    local shift="0"
+    local arg shift="0"
     case "$1" in
         "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
         *) shift="1"; shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
