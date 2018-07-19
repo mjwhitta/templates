@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+long_opt() {
+    local shift="0"
+    case "$1" in
+        "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
+        *) shift="1"; shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
+    esac
+    echo "$arg"
+    return $shift
+}
+
 usage() {
     echo "Usage: ${0/*\//} [OPTIONS]"
     echo
@@ -7,27 +17,21 @@ usage() {
     echo
     echo "Options:"
     echo "    -f, --flag         Example flag"
-    echo "    -f, --flag=FLAG    Example for storing cli arg"
     echo "    -h, --help         Display this help message"
+    echo "    -s, --store=VAL    Example for storing cli arg"
     echo
     exit $1
 }
 
 declare -a args
-unset flag help
+unset flag help store
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         "--") shift && args+=("$@") && break ;;
         "-f"|"--flag") flag="true" ;;
-        "-f"|"--flag"*)
-            case "$1" in
-                "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
-                *) shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
-            esac
-            flag="--flag $arg"
-            ;;
         "-h"|"--help") help="true" ;;
+        "-s"|"--store"*) store="$(long_opt $@)" || shift ;;
         *) args+=("$1") ;;
     esac
     shift

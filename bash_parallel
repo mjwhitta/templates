@@ -2,9 +2,19 @@
 
 clean() { rm -f $script; exit 0; }
 
-err() { [[ -z $clr ]] || echo -en "\e[31m"; echo -e "[!] $@\e[0m"; }
+err() { echo -e "${clr:+\e[31m}[!] ${@:2}\e[0m"; exit $1; }
 
-info() { [[ -z $clr ]] || echo -en "\e[37m"; echo -e "[=] $@\e[0m"; }
+info() { echo -e "${clr:+\e[37m}[=] $@\e[0m"; }
+
+long_opt() {
+    local shift="0"
+    case "$1" in
+        "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
+        *) shift="1"; shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
+    esac
+    echo "$arg"
+    return $shift
+}
 
 usage() {
     echo "Usage: ${0/*\//} [OPTIONS] <arg1>... [argN]"
@@ -13,10 +23,10 @@ usage() {
     echo
     echo "Options:"
     echo "    -f, --flag           Example flag"
-    echo "    -f, --flag=FLAG      Example for storing cli arg"
     echo "    -h, --help           Display this help message"
     echo "    --nocolor            Don't colorize output"
     echo "    -p, --parallel       Run using parallel (if installed)"
+    echo "    -s, --store=VAL      Example for storing cli arg"
     local default="(default: $threads)"
     echo "    -t, --threads=NUM    Use the specied number of threads"
     echo "                         if running in parallel $default"
@@ -24,10 +34,10 @@ usage() {
     exit $1
 }
 
-warn() { [[ -z $clr ]] || echo -en "\e[33m"; echo -e "[-] $@\e[0m"; }
+warn() { echo -e "${clr:+\e[33m}[-] $@\e[0m"; }
 
 declare -a args
-unset flag help parallel
+unset flag help parallel store
 clr="true"
 threads="32"
 
@@ -35,23 +45,11 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         "--") shift && args+=("$@") && break ;;
         "-f"|"--flag") flag="true" ;;
-        "-f"|"--flag"*)
-            case "$1" in
-                "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
-                *) shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
-            esac
-            flag="--flag $arg"
-            ;;
         "-h"|"--help") help="true" ;;
         "--nocolor") unset clr ;;
         "-p"|"--parallel") parallel="true" ;;
-        "-t"|"--threads"*)
-            case "$1" in
-                "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
-                *) shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
-            esac
-            threads="$arg"
-            ;;
+        "-s"|"--store"*) store="$(long_opt $@)" || shift ;;
+        "-t"|"--thread"*) threads="$(long_opt $@)" || shift ;;
         *) args+=("$1") ;;
     esac
     shift
@@ -81,14 +79,11 @@ trap clean SIGINT
 cat >$script <<EOF
 #!/usr/bin/env bash
 
-err() {$([[ -z $clr ]] || echo " echo -en \"\\e[31m\";") \
-echo -e "\\r[!] \$@\\e[0m\\e[K"; }
+err() { echo -e "\r${clr:+\e[31m}[!] \${@:2}\e[0m\e[K"; exit \$1; }
 
-info() {$([[ -z $clr ]] || echo " echo -en \"\\e[32m\";") \
-echo -e "\\r[+] \$@\\e[0m\\e[K"; }
+info() { echo -e "\r${clr:+\e[32m}[+] \$@\e[0m\e[K"; }
 
-warn() {$([[ -z $clr ]] || echo " echo -en \"\\e[33m\";") \
-echo -e "\\r[-] \$@\\e[0m\\e[K"; }
+warn() { echo -e "\r${clr:+\e[33m}[-] \$@\e[0m\e[K"; }
 
 let "timeout = RANDOM % 5"
 sleep \$timeout && info "\$1" # TODO

@@ -2,7 +2,7 @@
 
 function bash_multi() {
     bash_multi_cleanup() {
-        unset args flag help
+        unset args flag help store
         unset -f bash_multi_cleanup bash_multi_usage
     }
 
@@ -13,20 +13,21 @@ function bash_multi() {
         echo
         echo "Options:"
         echo "    -f, --flag         Example flag"
-        echo "    -f, --flag=FLAG    Example for storing cli arg"
         echo "    -h, --help         Display this help message"
+        echo "    -s, --STORE=VAL    Example for storing cli arg"
         echo
         bash_multi_cleanup
     }
 
     declare -a args
-    unset flag help
+    unset flag help store
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
             "--") shift && args+=("$@") && break ;;
             "-f"|"--flag") flag="true" ;;
-            "-f"|"--flag"*)
+            "-h"|"--help") help="true" ;;
+            "-s"|"--store"*)
                 case "$1" in
                     "--"*"="*)
                         arg="${1#*=}"
@@ -38,9 +39,8 @@ function bash_multi() {
                         arg="$1"
                         ;;
                 esac
-                flag="--flag $arg"
+                store="$arg"
                 ;;
-            "-h"|"--help") help="true" ;;
             *) args+=("$1") ;;
         esac
         shift
