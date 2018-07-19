@@ -95,10 +95,7 @@ info "Processing dataset for jobs"
 declare -a dataset=($@)
 let "total = ${#dataset[@]}"
 
-if [[ $total -eq 0 ]]; then
-    err "No dataset provided"
-    exit 3
-fi
+[[ $total -ne 0 ]] || err 3 "No dataset provided"
 
 info "$total jobs to run"
 if [[ -n $parallel ]]; then
