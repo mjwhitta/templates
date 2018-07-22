@@ -24,7 +24,7 @@ usage() {
     echo "Options:"
     echo "    -f, --flag           Example flag"
     echo "    -h, --help           Display this help message"
-    echo "    --nocolor            Don't colorize output"
+    echo "    --nocolor            Disable colorized output"
     echo "    -p, --parallel       Run using parallel (if installed)"
     echo "    -s, --store=VAL      Example for storing cli arg"
     local default="(default: $threads)"
