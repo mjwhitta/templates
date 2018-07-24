@@ -50,5 +50,6 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -z ${args[@]} ]] || set -- "${args[@]}"
 
+# Check for valid params and missing dependencies
 [[ -z $help ]] || usage 0
 [[ $# -eq 0 ]] || usage 2
