@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-err() { echo -e "${clr:+\e[31m}[!] $@\e[0m"; }
+err() { echo -e "${color:+\e[31m}[!] $@\e[0m"; }
 
-errx() { echo -e "${clr:+\e[31m}[!] ${@:2}\e[0m"; exit $1; }
+errx() { echo -e "${color:+\e[31m}[!] ${@:2}\e[0m"; exit $1; }
 
-info() { echo -e "${clr:+\e[37m}[*] $@\e[0m"; }
+info() { echo -e "${color:+\e[37m}[*] $@\e[0m"; }
 
 long_opt() {
     local arg shift="0"
@@ -30,18 +30,19 @@ usage() {
     exit $1
 }
 
-warn() { echo -e "${clr:+\e[33m}[-] $@\e[0m"; }
+warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
 
 declare -a args
 unset flag help store
-clr="true"
+color="true"
 
+# Parse command line options
 while [[ $# -gt 0 ]]; do
     case "$1" in
         "--") shift && args+=("$@") && break ;;
         "-f"|"--flag") flag="true" ;;
         "-h"|"--help") help="true" ;;
-        "--nocolor") unset clr ;;
+        "--nocolor") unset color ;;
         "-s"|"--store"*) store="$(long_opt $@)" || shift ;;
         *) args+=("$1") ;;
     esac
