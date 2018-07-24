@@ -62,7 +62,10 @@ done
 
 # Check for valid params and missing dependencies
 [[ -z $help ]] || usage 0
-[[ $# -ge 1 ]] || usage 2
+[[ $# -gt 0 ]] || usage 2
+for dep in TODO; do
+    [[ -n $(command -v $dep) ]] || errx 3 "$dep is not installed"
+done; unset dep
 
 # Determine parallel situation
 if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
@@ -103,7 +106,7 @@ info "Processing dataset for jobs"
 declare -a dataset=($@)
 let "total = ${#dataset[@]}"
 
-[[ $total -ne 0 ]] || errx 3 "No dataset provided"
+[[ $total -ne 0 ]] || errx 4 "No dataset provided"
 
 info "$total jobs to run"
 if [[ -n $parallel ]]; then

@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
 function bash_multi() {
+    for dep in TODO; do
+        if [[ -z $(command -v $dep) ]]; then
+            echo "$dep is not installed"
+            return 3
+        fi
+    done; unset dep
+
     bash_multi_cleanup() {
         unset args flag help store
         unset -f bash_multi_cleanup bash_multi_usage
