@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]]; do
         "-h"|"--help") help="true" ;;
         "--nocolor") unset color ;;
         "-s"|"--store"*) store="$(long_opt $@)" || shift ;;
-        "-t"|"--thread"*) threads="$(long_opt $@)" || shift ;;
+        "-t"|"--threads"*) threads="$(long_opt $@)" || shift ;;
         *) args+=("$1") ;;
     esac
     shift
