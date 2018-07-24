@@ -94,7 +94,7 @@ info() { echo -e "\r${color:+\e[37m}[*] \$@\e[0m\e[K"; }
 warn() { echo -e "\r${color:+\e[33m}[-] \$@\e[0m\e[K"; }
 
 let "timeout = RANDOM % 5"
-sleep \$timeout && info "\$1" # TODO
+sleep \$timeout && good "\$1" # TODO
 EOF
 chmod 700 $script
 
