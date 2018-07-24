@@ -4,6 +4,8 @@ err() { echo -e "${color:+\e[31m}[!] $@\e[0m"; }
 
 errx() { echo -e "${color:+\e[31m}[!] ${@:2}\e[0m"; exit $1; }
 
+good() { echo -e "${color:+\e[32m}[+] $@\e[0m"; }
+
 info() { echo -e "${color:+\e[37m}[*] $@\e[0m"; }
 
 long_opt() {
