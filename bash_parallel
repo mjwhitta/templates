@@ -16,6 +16,10 @@ good() { echo -e "${color:+\e[32m}[+] $@\e[0m"; }
 
 info() { echo -e "${color:+\e[37m}[*] $@\e[0m"; }
 
+json_get() {
+    [[ -z $json ]] || jq -cr ".$@" $json | sed -r "s/^null$//g"
+}
+
 long_opt() {
     local arg shift="0"
     case "$1" in
@@ -54,6 +58,7 @@ warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
 # TODO
 write_resume_file() {
     cat >$json <<EOF
+{}
 EOF
 }
 
@@ -61,9 +66,9 @@ declare -a args
 unset flag help store
 cache="${0##*/}.resume"
 color="true"
-parallel="true"
 joblog="$cache/joblog.txt"
 json="$cache/${0##*/}.json"
+parallel="true"
 threads="32"
 
 # Parse command line options
