@@ -19,7 +19,7 @@ long_opt() {
 }
 
 usage() {
-    echo "Usage: ${0/*\//} [OPTIONS]"
+    echo "Usage: ${0##*/} [OPTIONS]"
     echo
     echo "TODO"
     echo
@@ -55,6 +55,6 @@ done
 # Check for valid params and missing dependencies
 [[ -z $help ]] || usage 0
 [[ $# -eq 0 ]] || usage 2
-for dep in TODO; do
-    [[ -n $(command -v $dep) ]] || errx 3 "$dep is not installed"
-done; unset dep
+# for dep in TODO; do
+#     [[ -n $(command -v $dep) ]] || errx 3 "$dep is not installed"
+# done; unset dep
