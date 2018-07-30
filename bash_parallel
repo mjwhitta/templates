@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o noglob
+
 clean() {
     [[ ${1:-0} -ne 0 ]] || [[ ! -d $cache ]] || rm -rf $cache
     [[ -z $script ]] || [[ ! -f $script ]] || rm -f $script
