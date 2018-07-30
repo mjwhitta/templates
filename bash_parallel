@@ -48,7 +48,7 @@ usage() {
     echo "    -s, --store=VAL      Example for storing cli arg"
     echo "    -t, --threads=NUM    Use the specied number of threads"
     echo "                         (default: $threads)"
-    echo "    -v, --verobse        Do not hide parallel errors"
+    echo "    -v, --verbose        Do not hide parallel errors"
     echo
     exit $1
 }
@@ -179,7 +179,7 @@ subinfo() { echo -e "\r${color:+\e[36m}[=] \$@\e[0m\e[K"; }
 warn() { echo -e "\r${color:+\e[33m}[-] \$@\e[0m\e[K"; }
 
 # TODO
-let "timeout = RANDOM % 4"
+timeout="\$((RANDOM % 4))"
 sleep \$timeout
 good "\$1"
 EOF
@@ -197,7 +197,7 @@ else
         echo -e "\r\e[K" >&2
         echo -en "${color:+\e[37m}[$count/$total]\e[0m\e[K\e[1A" >&2
         $script "$data"
-        let "count += 1"
+        ((count += 1))
     done <$dataset; unset data
 fi
 
