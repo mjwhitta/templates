@@ -5,6 +5,8 @@ set -o noglob
 clean() {
     [[ ${1:-0} -ne 0 ]] || [[ ! -d $cache ]] || rm -rf $cache
     [[ -z $script ]] || [[ ! -f $script ]] || rm -f $script
+    # Show cursor again
+    echo -en "\e?25h"
     exit ${1:-0}
 }
 
@@ -143,6 +145,9 @@ script="/tmp/${0##*/}.parallel"
 
 # Ensure cleanup on ^C
 trap "clean -1" SIGINT
+
+# Hide cursor
+echo -en "\e?25l"
 
 # Process dataset
 info "Processing dataset for jobs"
