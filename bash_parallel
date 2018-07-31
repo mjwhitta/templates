@@ -5,8 +5,7 @@ set -o noglob
 clean() {
     [[ ${1:-0} -ne 0 ]] || [[ ! -d $cache ]] || rm -rf $cache
     [[ -z $script ]] || [[ ! -f $script ]] || rm -f $script
-    # Show cursor again
-    echo -en "\e?25h"
+    echo -en "\e?25h" # Show cursor again
     exit ${1:-0}
 }
 
