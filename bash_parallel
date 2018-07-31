@@ -162,7 +162,7 @@ else
 fi
 [[ $total -ne 0 ]] || errx 4 "No dataset provided"
 
-info "$total jobs to run"
+subinfo "$total jobs to run"
 
 # Create sub-script
 cat >$script <<EOF
