@@ -18,34 +18,40 @@ long_opt() {
     return $shift
 }
 
+subinfo() { echo -e "${color:+\e[36m}[=] $@\e[0m"; }
+
 usage() {
     echo "Usage: ${0##*/} [OPTIONS]"
     echo
     echo "TODO"
     echo
     echo "Options:"
-    echo "    -f, --flag         Example flag"
     echo "    -h, --help         Display this help message"
     echo "    --nocolor          Disable colorized output"
-    echo "    -s, --store=VAL    Example for storing cli arg"
+    echo "    -t, --todo         Example flag"
+    echo "    -t, --todo=TODO    Example for storing cli arg"
     echo
     exit $1
 }
 
 warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
 
+# for dep in TODO; do
+#     [[ -n $(command -v $dep) ]] || errx 3 "$dep is not installed"
+# done; unset dep
+
 declare -a args
-unset flag help store
+unset help todo
 color="true"
 
 # Parse command line options
 while [[ $# -gt 0 ]]; do
     case "$1" in
         "--") shift && args+=("$@") && break ;;
-        "-f"|"--flag") flag="true" ;;
         "-h"|"--help") help="true" ;;
         "--nocolor") unset color ;;
-        "-s"|"--store"*) store="$(long_opt $@)" || shift ;;
+        "-t"|"--todo") todo="true" ;;
+        "-t"|"--todo"*) todo="$(long_opt $@)" || shift ;;
         *) args+=("$1") ;;
     esac
     shift
@@ -55,6 +61,5 @@ done
 # Check for valid params and missing dependencies
 [[ -z $help ]] || usage 0
 [[ $# -eq 0 ]] || usage 2
-# for dep in TODO; do
-#     [[ -n $(command -v $dep) ]] || errx 3 "$dep is not installed"
-# done; unset dep
+
+# TODO

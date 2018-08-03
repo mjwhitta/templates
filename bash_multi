@@ -19,22 +19,22 @@ function bash_multi() {
         echo "TODO"
         echo
         echo "Options:"
-        echo "    -f, --flag         Example flag"
         echo "    -h, --help         Display this help message"
-        echo "    -s, --STORE=VAL    Example for storing cli arg"
+        echo "    -t, --todo         Example flag"
+        echo "    -t, --todo=TODO    Example for storing cli arg"
         echo
         bash_multi_cleanup
     }
 
     declare -a args
-    unset flag help store
+    unset help todo
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
             "--") shift && args+=("$@") && break ;;
-            "-f"|"--flag") flag="true" ;;
             "-h"|"--help") help="true" ;;
-            "-s"|"--store"*)
+            "-t"|"--todo") todo="true" ;;
+            "-t"|"--todo"*)
                 case "$1" in
                     "--"*"="*)
                         arg="${1#*=}"
@@ -46,7 +46,7 @@ function bash_multi() {
                         arg="$1"
                         ;;
                 esac
-                store="$arg"
+                todo="$arg"
                 ;;
             *) args+=("$1") ;;
         esac
