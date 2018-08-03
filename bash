@@ -36,6 +36,7 @@ usage() {
 
 warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
 
+# Check for missing dependencies
 # for dep in TODO; do
 #     [[ -n $(command -v $dep) ]] || errx 3 "$dep is not installed"
 # done; unset dep
@@ -58,7 +59,7 @@ while [[ $# -gt 0 ]]; do
 done
 [[ -z ${args[@]} ]] || set -- "${args[@]}"
 
-# Check for valid params and missing dependencies
+# Check for valid params
 [[ -z $help ]] || usage 0
 [[ $# -eq 0 ]] || usage 2
 
