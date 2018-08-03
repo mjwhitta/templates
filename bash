@@ -51,7 +51,7 @@ while [[ $# -gt 0 ]]; do
         "-h"|"--help") help="true" ;;
         "--nocolor") unset color ;;
         "-t"|"--todo") todo="true" ;;
-        "-t"|"--todo"*) todo="$(long_opt $@)" || shift ;;
+        "-t"|"--todo"*) todo="$(long_opt "$@")" || shift ;;
         *) args+=("$1") ;;
     esac
     shift
