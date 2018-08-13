@@ -3,7 +3,7 @@
 require "hilighter"
 require "io/wait"
 require "optparse"
-require "todo"
+# require "todo"
 
 class TodoExit
     GOOD = 0
@@ -26,10 +26,10 @@ def parse(args)
 
         opts.banner = "Usage: #{File.basename($0)} [OPTIONS]"
 
-        opts.on("")
+        opts.on("", "DESCRIPTION")
 
-        info.scan(/\S.{0,80}\S(?=\s|$)|\S+/).each do |line|
-            opts.on("#{line}")
+        info.scan(/\S.{0,66}\S(?=\s|$)|\S+/).each do |line|
+            opts.on("    #{line}")
         end
 
         opts.on("", "OPTIONS")
@@ -57,6 +57,13 @@ def parse(args)
             "Show backtrace when error occurs"
         ) do
             options["verbose"] = true
+        end
+
+        opts.on("-V", "--version", "Show version") do
+            __FILE__.match(/todo-(\d+\.\d+\.\d+)/) do |m|
+                puts m[1]
+            end
+            exit TodoExit::GOOD
         end
     end
 
