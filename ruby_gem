@@ -113,7 +113,12 @@ rescue Errno::EPIPE
     # Do nothing. This can happen if piping to another program such as
     # less. Usually if less is closed before we're done with STDOUT.
 rescue Todo::Error => e
-    puts e.message
+    $stderr.puts e.message.red
+    if (options["verbose"])
+        e.backtrace.each do |line|
+            $stderr.puts line.yellow
+        end
+    end
     exit TodoExit::EXCEPTION
 rescue Exception => e
     $stderr.puts [
