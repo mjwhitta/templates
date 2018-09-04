@@ -37,7 +37,6 @@ usage() {
     exit $1
 }
 
-
 declare -a args deps
 unset help todo
 color="true"
