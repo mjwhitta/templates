@@ -71,6 +71,7 @@ declare -a args deps
 unset help todo
 cache="${0##*/}.resume"
 color="true"
+deps+=("jq")
 deps+=("todo")
 joblog="$cache/joblog.txt"
 json="$cache/${0##*/}.json"
