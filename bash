@@ -1,24 +1,27 @@
 #!/usr/bin/env bash
 
+### Helpers begin
+checkdeps() {
+    for d in "${deps[@]}"; do
+        [[ -n $(command -v $d) ]] || errx 128 "$d is not installed"
+    done; unset d
+}
 err() { echo -e "${color:+\e[31m}[!] $@\e[0m"; }
-
 errx() { echo -e "${color:+\e[31m}[!] ${@:2}\e[0m"; exit $1; }
-
 good() { echo -e "${color:+\e[32m}[+] $@\e[0m"; }
-
 info() { echo -e "${color:+\e[37m}[*] $@\e[0m"; }
-
 long_opt() {
     local arg shift="0"
     case "$1" in
-        "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 1 ;;
-        *) shift="1"; shift; [[ $# -gt 0 ]] || usage 1; arg="$1" ;;
+        "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 127 ;;
+        *) shift="1"; shift; [[ $# -gt 0 ]] || usage 127; arg="$1" ;;
     esac
     echo "$arg"
     return $shift
 }
-
 subinfo() { echo -e "${color:+\e[36m}[=] $@\e[0m"; }
+warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
+### Helpers end
 
 usage() {
     echo "Usage: ${0##*/} [OPTIONS]"
@@ -34,16 +37,14 @@ usage() {
     exit $1
 }
 
-warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
 
-# Check for missing dependencies
-# for dep in TODO; do
-#     [[ -n $(command -v $dep) ]] || errx 3 "$dep is not installed"
-# done; unset dep
-
-declare -a args
+declare -a args deps
 unset help todo
 color="true"
+deps+=("todo")
+
+# Check for missing dependencies
+checkdeps
 
 # Parse command line options
 while [[ $# -gt 0 ]]; do
@@ -61,6 +62,6 @@ done
 
 # Check for valid params
 [[ -z $help ]] || usage 0
-[[ $# -eq 0 ]] || usage 2
+[[ $# -eq 0 ]] || usage 1
 
 # TODO
