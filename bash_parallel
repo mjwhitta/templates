@@ -48,7 +48,7 @@ usage() {
     echo "    --nocolor            Disable colorized output"
     echo "    -r, --resume         Resume from a previous run"
     echo "    -t, --threads=NUM    Use the specied number of threads"
-    echo "                         (default: $threads)"
+    echo "                         (default: 32)"
     echo "    -t, --todo           Example flag"
     echo "    -t, --todo=TODO      Example for storing cli arg"
     echo "    -v, --verbose        Do not hide parallel errors"
@@ -136,7 +136,7 @@ if [[ -n $parallel ]]; then
     elif [[ -f $json ]]; then
         read_resume_file
     elif [[ -n $resume ]]; then
-        errx 6 "No resume file found in current directory"
+        errx 2 "No resume file found in current directory"
     else
         write_resume_file
     fi
