@@ -24,16 +24,18 @@ warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
 ### Helpers end
 
 usage() {
-    echo "Usage: ${0##*/} [OPTIONS]"
-    echo
-    echo "TODO"
-    echo
-    echo "Options:"
-    echo "    -h, --help         Display this help message"
-    echo "    --nocolor          Disable colorized output"
-    echo "    -t, --todo         Example flag"
-    echo "    -t, --todo=TODO    Example for storing cli arg"
-    echo
+    cat <<EOF
+Usage: ${0##*/} [OPTIONS]
+
+TODO
+
+Options:
+    -h, --help         Display this help message
+    --nocolor          Disable colorized output
+    -t, --todo         Example flag
+    -t, --todo=TODO    Example for storing cli arg
+
+EOF
     exit $1
 }
 

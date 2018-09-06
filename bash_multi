@@ -14,15 +14,17 @@ function bash_multi() {
     }
 
     bash_multi_usage() {
-        echo "Usage: bash_multi [OPTIONS]"
-        echo
-        echo "TODO"
-        echo
-        echo "Options:"
-        echo "    -h, --help         Display this help message"
-        echo "    -t, --todo         Example flag"
-        echo "    -t, --todo=TODO    Example for storing cli arg"
-        echo
+        cat <<EOF
+Usage: bash_multi [OPTIONS]
+
+TODO
+
+Options:
+    -h, --help         Display this help message
+    -t, --todo         Example flag
+    -t, --todo=TODO    Example for storing cli arg
+
+EOF
         bash_multi_cleanup
     }
 
