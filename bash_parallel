@@ -2,6 +2,11 @@
 
 ### Helpers begin
 set -o noglob
+check_and_lock() {
+    mkdir -p $cache
+    [[ ! -f $cache/.lock ]] || errx 125 "$cache/.lock already exists"
+    echo "$$" >$cache/.lock
+}
 checkdeps() {
     for d in "${deps[@]}"; do
         [[ -n $(command -v $d) ]] || errx 128 "$d is not installed"
@@ -11,6 +16,7 @@ clean() {
     [[ ${1:-0} -ne 0 ]] || [[ ! -d $cache ]] || rm -rf $cache
     [[ -z $script ]] || [[ ! -f $script ]] || rm -f $script
     echo -en "\e[?25h" # Show cursor again
+    [[ ${1:-0} -eq 125 ]] || rm -f $cache/.lock
     exit ${1:-0}
 }
 err() { echo -e "${color:+\e[31m}[!] $@\e[0m"; }
@@ -58,8 +64,6 @@ EOF
 }
 
 write_resume_file() {
-    [[ -z $cache ]] || rm -rf $cache
-    mkdir -p $cache
     # TODO
     cat >$json <<EOF
 {
@@ -70,10 +74,10 @@ EOF
 
 declare -a args deps
 unset help todo
-cache="${0##*/}.resume"
+cache="$HOME/.cache/${0##*/}/$(pwd | sha256sum | awk '{print $1}')"
 color="true"
 deps+=("jq")
-deps+=("todo")
+# deps+=("todo")
 joblog="$cache/joblog.txt"
 json="$cache/${0##*/}.json"
 parallel="true"
@@ -103,6 +107,9 @@ done
 [[ -z $help ]] || usage 0
 [[ $# -gt 0 ]] || [[ -n $resume ]] || usage 1
 
+# Lock to prevent parallel issues
+check_and_lock
+
 # Determine parallel situation
 if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
     warn "Parallel is not installed, defaulting to single-threaded"
@@ -116,9 +123,6 @@ if [[ -n $parallel ]] && [[ ! -f $HOME/.parallel/will-cite ]]; then
 fi
 
 if [[ -n $parallel ]]; then
-    # Ensure resume directory exists
-    mkdir -p $cache
-
     # Check for resume file
     if [[ -f $json ]] && [[ -z $resume ]]; then
         warn "Resume file found" >&2
