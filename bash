@@ -42,7 +42,7 @@ EOF
 declare -a args deps
 unset help todo
 color="true"
-deps+=("todo")
+# deps+=("todo")
 
 # Check for missing dependencies
 checkdeps
