@@ -4,30 +4,30 @@
 set -o noglob
 check_and_lock() {
     [[ -n $cache ]] || errx 124 "Cache is not defined"
-    mkdir -p $cache
+    mkdir -p "$cache"
     [[ ! -f $cache/.lock ]] || errx 125 "$cache/.lock already exists"
-    echo "$$" >$cache/.lock
+    echo "$$" >"$cache/.lock"
 }
 checkdeps() {
     for d in "${deps[@]}"; do
-        [[ -n $(command -v $d) ]] || errx 128 "$d is not installed"
+        [[ -n $(command -v "$d") ]] || errx 128 "$d is not installed"
     done; unset d
 }
 clean() {
     if [[ ${1:-0} -eq 0 ]]; then
-        [[ -z $cache ]] || [[ ! -d $cache ]] || rm -rf $cache
+        [[ -z $cache ]] || [[ ! -d $cache ]] || rm -rf "$cache"
     fi
-    [[ -z $script ]] || [[ ! -f $script ]] || rm -f $script
+    [[ -z $script ]] || [[ ! -f $script ]] || rm -f "$script"
     echo -en "\e[?25h" # Show cursor again
-    [[ ${1:-0} -eq 125 ]] || [[ -z $cache ]] || rm -f $cache/.lock
-    exit ${1:-0}
+    [[ ${1:-0} -eq 125 ]] || [[ -z $cache ]] || rm -f "$cache/.lock"
+    exit "${1:-0}"
 }
-err() { echo -e "${color:+\e[31m}[!] $@\e[0m"; }
-errx() { echo -e "${color:+\e[31m}[!] ${@:2}\e[0m"; clean $1; }
-good() { echo -e "${color:+\e[32m}[+] $@\e[0m"; }
-info() { echo -e "${color:+\e[37m}[*] $@\e[0m"; }
+err() { echo -e "${color:+\e[31m}[!] $*\e[0m"; }
+errx() { echo -e "${color:+\e[31m}[!] ${*:2}\e[0m"; clean "$1"; }
+good() { echo -e "${color:+\e[32m}[+] $*\e[0m"; }
+info() { echo -e "${color:+\e[37m}[*] $*\e[0m"; }
 json_get() {
-    [[ -z $json ]] || jq -cr ".$@" $json | sed -r "s/^null$//g"
+    [[ -z $json ]] || jq -cr ".$*" "$json" | sed -r "s/^null$//g"
 }
 long_opt() {
     local arg shift="0"
@@ -38,8 +38,8 @@ long_opt() {
     echo "$arg"
     return $shift
 }
-subinfo() { echo -e "${color:+\e[36m}[=] $@\e[0m"; }
-warn() { echo -e "${color:+\e[33m}[-] $@\e[0m"; }
+subinfo() { echo -e "${color:+\e[36m}[=] $*\e[0m"; }
+warn() { echo -e "${color:+\e[33m}[-] $*\e[0m"; }
 ### Helpers end
 
 read_resume_file() {
@@ -63,12 +63,12 @@ Options:
     -v, --verbose        Do not hide parallel errors
 
 EOF
-    exit $1
+    exit "$1"
 }
 
 write_resume_file() {
     # TODO
-    cat >$json <<EOF
+    cat >"$json" <<EOF
 {
   "todo": "$todo"
 }
@@ -76,7 +76,7 @@ EOF
 }
 
 declare -a args deps
-unset help todo
+unset help
 color="true"
 deps+=("jq")
 # deps+=("todo")
@@ -94,14 +94,14 @@ while [[ $# -gt 0 ]]; do
         "--nocolor") unset color ;;
         "-r"|"--resume") resume="--resume" ;;
         "-t"|"--threads"*) threads="$(long_opt "$@")" || shift ;;
-        "-t"|"--todo") todo="true" ;;
-        "-t"|"--todo"*) todo="$(long_opt "$@")" || shift ;;
+        # "-t"|"--todo") todo="true" ;;
+        # "-t"|"--todo"*) todo="$(long_opt "$@")" || shift ;;
         "-v"|"--verbose") verbose="true" ;;
         *) args+=("$1") ;;
     esac
     shift
 done
-[[ -z ${args[@]} ]] || set -- "${args[@]}"
+[[ ${#args[@]} -eq 0 ]] || set -- "${args[@]}"
 
 # Check for valid params
 [[ -z $help ]] || usage 0
@@ -123,7 +123,7 @@ fi
 
 # Cite if needed
 if [[ -n $parallel ]] && [[ ! -f $HOME/.parallel/will-cite ]]; then
-    mkdir -p $HOME/.parallel
+    mkdir -p "$HOME/.parallel"
     parallel --citation
 fi
 
@@ -133,7 +133,7 @@ if [[ -n $parallel ]]; then
         warn "Resume file found" >&2
         while :; do
             # Prompt whether to overwrite or resume
-            read -n 1 -p "Would you like to resume [y/n/q]: " -s ans
+            read -n 1 -p "Would you like to resume [y/n/q]: " -rs ans
             echo
 
             case "$ans" in
@@ -171,17 +171,17 @@ if [[ ! -f $dataset ]]; then
     total="0"
     for data in "$@"; do
         ((total += 1))
-        echo "$data" >>$dataset
+        echo "$data" >>"$dataset"
     done; unset data
 else
-    total="$(cat $dataset | wc -l)"
+    total="$(wc -l "$dataset" | awk '{print $1}')"
 fi
 [[ $total -gt 0 ]] || errx 0 "No dataset provided"
 
 subinfo "$total jobs to run"
 
 # Create sub-script
-cat >$script <<EOF
+cat >"$script" <<EOF
 #!/usr/bin/env bash
 
 ### Helpers begin
@@ -199,13 +199,13 @@ timeout="\$((RANDOM % 4))"
 sleep \$timeout
 good "\$1"
 EOF
-chmod 700 $script
+chmod 700 "$script"
 
 # Run sub-script
 if [[ -n $parallel ]]; then
     # If more than one dataset, cat and pipe to parallel
-    parallel -a $dataset --bar --joblog ${resume:++}$joblog --lb \
-        -P $threads -r $resume $script {}
+    parallel -a "$dataset" --bar --joblog ${resume:++}"$joblog" --lb \
+        -P "$threads" -r $resume "$script" {}
     [[ -n $verbose ]] || echo -en "\e[1A\e[K" >&2
 else
     count="1"
@@ -214,7 +214,7 @@ else
         echo -en "${color:+\e[37m}[$count/$total]\e[0m\e[K\e[1A" >&2
         $script "$data"
         ((count += 1))
-    done <$dataset; unset data
+    done <"$dataset"; unset data
 fi
 
 clean
