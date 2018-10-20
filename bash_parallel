@@ -122,14 +122,14 @@ if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
 fi
 
 # Cite if needed
-if [[ -n $parallel ]] && [[ ! -f $HOME/.parallel/will-cite ]]; then
+if [[ -n $parallel ]] && [[ ! -f "$HOME/.parallel/will-cite" ]]; then
     mkdir -p "$HOME/.parallel"
     parallel --citation
 fi
 
 if [[ -n $parallel ]]; then
     # Check for resume file
-    if [[ -f $json ]] && [[ -z $resume ]]; then
+    if [[ -f "$json" ]] && [[ -z $resume ]]; then
         warn "Resume file found" >&2
         while :; do
             # Prompt whether to overwrite or resume
@@ -167,7 +167,7 @@ echo -en "\e[?25l"
 # Process dataset
 info "Processing dataset for jobs"
 
-if [[ ! -f $dataset ]]; then
+if [[ ! -f "$dataset" ]]; then
     total="0"
     for data in "$@"; do
         ((total += 1))
@@ -186,12 +186,12 @@ cat >"$script" <<EOF
 
 ### Helpers begin
 set -o noglob
-err() { echo -e "\r${color:+\e[31m}[!] \$@\e[0m\e[K"; }
-errx() { echo -e "\r${color:+\e[31m}[!] \${@:2}\e[0m\e[K"; exit \$1; }
-good() { echo -e "\r${color:+\e[32m}[+] \$@\e[0m\e[K"; }
-info() { echo -e "\r${color:+\e[37m}[*] \$@\e[0m\e[K"; }
-subinfo() { echo -e "\r${color:+\e[36m}[=] \$@\e[0m\e[K"; }
-warn() { echo -e "\r${color:+\e[33m}[-] \$@\e[0m\e[K"; }
+err() { echo -e "\r${color:+\e[31m}[!] \$*\e[0m\e[K"; }
+errx() { echo -e "\r${color:+\e[31m}[!] \${*:2}\e[0m\e[K"; exit \$1; }
+good() { echo -e "\r${color:+\e[32m}[+] \$*\e[0m\e[K"; }
+info() { echo -e "\r${color:+\e[37m}[*] \$*\e[0m\e[K"; }
+subinfo() { echo -e "\r${color:+\e[36m}[=] \$*\e[0m\e[K"; }
+warn() { echo -e "\r${color:+\e[33m}[-] \$*\e[0m\e[K"; }
 ### Helpers end
 
 # TODO
