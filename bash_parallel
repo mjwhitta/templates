@@ -5,7 +5,9 @@ set -o noglob
 check_and_lock() {
     [[ -n $cache ]] || errx 124 "Cache is not defined"
     mkdir -p "$cache"
-    [[ ! -f $cache/.lock ]] || errx 125 "$cache/.lock already exists"
+    if [[ -f "$cache/.lock" ]]; then
+        errx 125 "$cache/.lock already exists"
+    fi
     echo "$$" >"$cache/.lock"
 }
 checkdeps() {
@@ -15,9 +17,9 @@ checkdeps() {
 }
 clean() {
     if [[ ${1:-0} -eq 0 ]]; then
-        [[ -z $cache ]] || [[ ! -d $cache ]] || rm -rf "$cache"
+        [[ -z $cache ]] || [[ ! -d "$cache" ]] || rm -rf "$cache"
     fi
-    [[ -z $script ]] || [[ ! -f $script ]] || rm -f "$script"
+    [[ -z $script ]] || [[ ! -f "$script" ]] || rm -f "$script"
     echo -en "\e[?25h" # Show cursor again
     [[ ${1:-0} -eq 125 ]] || [[ -z $cache ]] || rm -f "$cache/.lock"
     exit "${1:-0}"
@@ -67,6 +69,8 @@ EOF
 }
 
 write_resume_file() {
+    [[ -z $cache ]] || rm -rf "$cache"
+    mkdir -p "$cache"
     # TODO
     cat >"$json" <<EOF
 {
