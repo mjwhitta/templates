@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ### Helpers begin
-checkdeps() {
+check_deps() {
     for d in "${deps[@]}"; do
         [[ -n $(command -v "$d") ]] || errx 128 "$d is not installed"
     done; unset d
@@ -45,7 +45,7 @@ color="true"
 # deps+=("todo")
 
 # Check for missing dependencies
-checkdeps
+check_deps
 
 # Parse command line options
 while [[ $# -gt 0 ]]; do
