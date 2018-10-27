@@ -36,7 +36,7 @@ check_resume_file() {
     elif [[ -f $json ]]; then
         read_resume_file
     elif [[ -n $resume ]]; then
-        errx 123 "No resume file found in current directory"
+        errx 123 "No resume file found"
     else
         write_resume_file
     fi
