@@ -131,29 +131,30 @@ if [[ -n $parallel ]] && [[ ! -f "$HOME/.parallel/will-cite" ]]; then
     parallel --citation
 fi
 
-if [[ -n $parallel ]]; then
-    # Check for resume file
-    if [[ -f "$json" ]] && [[ -z $resume ]]; then
-        warn "Resume file found" >&2
-        while :; do
-            # Prompt whether to overwrite or resume
-            read -n 1 -p "Would you like to resume [y/n/q]: " -rs ans
-            echo
+# Check for resume file
+if [[ -z $parallel ]]; then
+    echo -n # do nothing
+elif [[ -f "$json" ]] && [[ -z $resume ]]; then
+    warn "Resume file found" >&2
+    while :; do
+        # Prompt whether to overwrite or resume
+        read -n 1 -p "Would you like to resume [y/n/q/c]: " -rs ans
+        echo
 
-            case "$ans" in
-                "n") write_resume_file; break ;;
-                "q") exit 0 ;;
-                "y") read_resume_file; resume="--resume"; break ;;
-                *) echo "Invalid response, try again!" ;;
-            esac
-        done
-    elif [[ -f $json ]]; then
-        read_resume_file
-    elif [[ -n $resume ]]; then
-        errx 2 "No resume file found in current directory"
-    else
-        write_resume_file
-    fi
+        case "$ans" in
+            "c") clean 0 ;;
+            "n") write_resume_file; break ;;
+            "q") exit 0 ;;
+            "y") read_resume_file; resume="--resume"; break ;;
+            *) echo "Invalid response, try again!" ;;
+        esac
+    done
+elif [[ -f $json ]]; then
+    read_resume_file
+elif [[ -n $resume ]]; then
+    errx 2 "No resume file found in current directory"
+else
+    write_resume_file
 fi
 
 # Dataset used by parallel
