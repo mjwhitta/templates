@@ -46,7 +46,7 @@ clean() {
         [[ -z $cache ]] || [[ ! -d "$cache" ]] || rm -rf "$cache"
     fi
     [[ -z $script ]] || [[ ! -f "$script" ]] || rm -f "$script"
-    echo -en "\e[?25h" # Show cursor again
+    show_cursor
     [[ ${1:-0} -eq 125 ]] || [[ -z $cache ]] || rm -f "$cache/.lock"
     exit "${1:-0}"
 }
@@ -67,6 +67,7 @@ long_opt() {
     echo "$arg"
     return $shift
 }
+show_cursor() { echo -en "\e[?25h"; }
 subinfo() { echo -e "${color:+\e[36m}[=] $*\e[0m"; }
 warn() { echo -e "${color:+\e[33m}[-] $*\e[0m"; }
 ### Helpers end
