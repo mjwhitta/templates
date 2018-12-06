@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+require "sinatra"
+
+get("/test") do
+    erb(:test_get)
+end
+
+post("/test") do
+    p params
+    erb(:test_post, :locals => {:data => params[:data]})
+end
+
+get("/todo") do
+    erb(:todo, :locals => {:todo => "todo"})
+end
+
+get("/todo/:todo") do
+    erb(:todo, :locals => {:todo => params[:todo]})
+end
+
+get("/*") do
+    name = params["splat"][0].capitalize
+    name = "world" if (name.empty?)
+    erb(:hello, :locals => {:name => name})
+end
+
+__END__
+
+@@hello
+<h1><font color="#DDDDDD">Hello <%= name %></font></h1>
+
+@@layout
+<html>
+  <head>
+    <style>
+      summary {
+        outline: none;
+      }
+    </style>
+  </head>
+  <title>TODO</title>
+  <body bgcolor="#323232">
+    <%= erb(:navbar) %>
+    <%= yield %>
+  </body>
+</html>
+
+@@navbar
+<h1 align="center">
+  <font color="#DDDDDD">TODO</font>
+</h1>
+<table
+  align="center"
+  bgcolor="#505050"
+  cellspacing="5px"
+  style="border-radius:5px"
+  width="100%">
+  <tr>
+    <td align="left">
+      <a href="/"><font color="#DDDDDD">Hello</font></a>
+      <a href="/test"><font color="#DDDDDD">Test</font></a>
+      <a href="/todo"><font color="#DDDDDD">TODO</font></a>
+    </td>
+  </tr>
+</table>
+<br>
+
+@@test_get
+<h1><font color="#DDDDDD">Enter some data:</font></h1>
+<form action="/test" method="post">
+  <input name="data" type="text">
+  <input type="submit" value="Submit">
+</form>
+
+@@test_post
+<h1><font color="#DDDDDD">Data:</font></h1><br>
+<font color="#DDDDDD"><%= data %></font>
+
+@@todo
+<h1><font color="#DDDDDD">TODO: <%= todo %></font></h1>
