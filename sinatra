@@ -7,7 +7,6 @@ get("/test") do
 end
 
 post("/test") do
-    p params
     erb(:test_post, :locals => {:data => params[:data]})
 end
 
