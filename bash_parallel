@@ -157,8 +157,11 @@ if [[ -n $parallel ]] && [[ ! -f "$HOME/.parallel/will-cite" ]]; then
     parallel --citation
 fi
 
+# Save command line args
+# TODO
+
 # Cache variables
-hash="$(pwd | sha256sum | awk '{print $1}')"
+hash="$(pwd | sha256sum | awk '{print $1}')" # TODO use cli args maybe
 cache="$HOME/.cache/${0##*/}/$hash"
 joblog="$cache/joblog.txt"
 json="$cache/${0##*/}.json"
@@ -176,14 +179,12 @@ info "Processing dataset for jobs"
 
 dataset="$cache/${0##*/}.dataset"
 if [[ ! -f "$dataset" ]]; then
-    total="0"
+    # TODO create dataset somehow
     for data in "$@"; do
-        ((total += 1))
         echo "$data" >>"$dataset"
     done; unset data
-else
-    total="$(wc -l "$dataset" | awk '{print $1}')"
 fi
+total="$(wc -l "$dataset" | awk '{print $1}')"
 [[ $total -gt 0 ]] || errx 2 "No dataset provided"
 
 subinfo "$total jobs to run"
