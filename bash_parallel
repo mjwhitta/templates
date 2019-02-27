@@ -197,7 +197,7 @@ cat >"$script" <<EOF
 ### Helpers begin
 set -o noglob
 err() { echo -e "\r${color:+\e[31m}[!] \$*\e[0m\e[K"; }
-errx() { err "\${*:2}"; exit \$1; }
+errx() { err "\${*:2}"; exit "\$1"; }
 good() { echo -e "\r${color:+\e[32m}[+] \$*\e[0m\e[K"; }
 info() { echo -e "\r${color:+\e[37m}[*] \$*\e[0m\e[K"; }
 subinfo() { echo -e "\r${color:+\e[36m}[=] \$*\e[0m\e[K"; }
