@@ -179,6 +179,8 @@ info "Processing dataset for jobs"
 
 dataset="$cache/${0##*/}.dataset"
 if [[ ! -f "$dataset" ]]; then
+    touch "$dataset"
+
     # TODO create dataset somehow
     for data in "$@"; do
         echo "$data" >>"$dataset"
