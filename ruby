@@ -4,6 +4,27 @@ require "hilighter"
 require "io/wait"
 require "optparse"
 
+### Helpers begin
+def err(msg)
+    puts("[!] #{msg}".red)
+end
+def errx(msg)
+    raise Exception.new(msg)
+end
+def good(msg)
+    puts("[+] #{msg}".green)
+end
+def info(msg)
+    puts("[*] #{msg}".white)
+end
+def subinfo(msg)
+    puts("[=] #{msg}".cyan)
+end
+def warn(msg)
+    puts("[-] #{msg}".yellow)
+end
+### Helpers end
+
 class Exit
     GOOD = 0
     INVALID_OPTION = 1
@@ -12,23 +33,6 @@ class Exit
     EXTRA_ARGUMENTS = 4
     EXCEPTION = 5
     AMBIGUOUS_ARGUMENT = 6
-end
-
-def err(msg)
-    puts("[!] #{msg}".red)
-end
-
-def errx(status, msg)
-    err(msg)
-    exit status
-end
-
-def good(msg)
-    puts("[+] #{msg}".green)
-end
-
-def info(msg)
-    puts("[*] #{msg}".white)
 end
 
 def parse(args)
@@ -107,14 +111,6 @@ def parse(args)
     return options
 end
 
-def subinfo(msg)
-    puts("[=] #{msg}".cyan)
-end
-
-def warn(msg)
-    puts("[-] #{msg}".yellow)
-end
-
 begin
     options = parse(ARGV)
 rescue Interrupt
@@ -133,16 +129,16 @@ rescue Exception => e
     $stderr.puts(
         [
             "Oops! Looks like an error has occured! Maybe the",
-            "message below will help. If not,"
-        ].join(" ")
+            "message below will help. If not, you can use the",
+            "--verbose flag to get a backtrace."
+        ].join(" ").wrap
     )
-    $stderr.puts("you can use the --verbose flag to get a backtrace.")
     $stderr.puts
 
-    $stderr.puts(e.message)
+    $stderr.puts(e.message.white.on_red)
     if (options["verbose"])
         e.backtrace.each do |line|
-            $stderr.puts(line)
+            $stderr.puts(line.light_yellow)
         end
     end
     exit Exit::EXCEPTION

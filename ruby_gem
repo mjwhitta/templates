@@ -5,6 +5,27 @@ require "io/wait"
 require "optparse"
 # require "todo"
 
+### Helpers begin
+def err(msg)
+    puts("[!] #{msg}".red)
+end
+def errx(msg)
+    raise Exception.new(msg)
+end
+def good(msg)
+    puts("[+] #{msg}".green)
+end
+def info(msg)
+    puts("[*] #{msg}".white)
+end
+def subinfo(msg)
+    puts("[=] #{msg}".cyan)
+end
+def warn(msg)
+    puts("[-] #{msg}".yellow)
+end
+### Helpers end
+
 class TodoExit
     GOOD = 0
     INVALID_OPTION = 1
@@ -13,23 +34,6 @@ class TodoExit
     EXTRA_ARGUMENTS = 4
     EXCEPTION = 5
     AMBIGUOUS_ARGUMENT = 6
-end
-
-def err(msg)
-    puts("[!] #{msg}".red)
-end
-
-def errx(status, msg)
-    err(msg)
-    exit status
-end
-
-def good(msg)
-    puts("[+] #{msg}".green)
-end
-
-def info(msg)
-    puts("[*] #{msg}".white)
 end
 
 def parse(args)
@@ -113,14 +117,6 @@ def parse(args)
     end
 
     return options
-end
-
-def subinfo(msg)
-    puts("[=] #{msg}".cyan)
-end
-
-def warn(msg)
-    puts("[-] #{msg}".yellow)
 end
 
 begin
