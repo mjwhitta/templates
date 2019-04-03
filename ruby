@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require "hilighter"
 require "io/wait"
 require "optparse"
 
@@ -13,6 +14,23 @@ class Exit
     AMBIGUOUS_ARGUMENT = 6
 end
 
+def err(msg)
+    puts("[!] #{msg}".red)
+end
+
+def errx(status, msg)
+    err(msg)
+    exit status
+end
+
+def good(msg)
+    puts("[+] #{msg}".green)
+end
+
+def info(msg)
+    puts("[*] #{msg}".white)
+end
+
 def parse(args)
     options = Hash.new
     options["verbose"] = false
@@ -20,7 +38,7 @@ def parse(args)
     info = "TODO"
 
     parser = OptionParser.new do |opts|
-        opts.summary_width = 32
+        opts.summary_width = 20
 
         opts.banner = "Usage: #{File.basename($0)} [OPTIONS]"
 
@@ -33,8 +51,12 @@ def parse(args)
         opts.on("", "OPTIONS")
 
         opts.on("-h", "--help", "Display this help message") do
-            puts opts
+            puts(opts)
             exit Exit::GOOD
+        end
+
+        opts.on("--nocolor", "Disable colorized output") do
+            Hilighter.disable
         end
 
         opts.on(
@@ -57,32 +79,40 @@ def parse(args)
     begin
         parser.parse!(args)
     rescue OptionParser::InvalidOption => e
-        puts e.message
-        puts parser
+        puts(e.message)
+        puts(parser)
         exit Exit::INVALID_OPTION
     rescue OptionParser::InvalidArgument => e
-        puts e.message
-        puts parser
+        puts(e.message)
+        puts(parser)
         exit Exit::INVALID_ARGUMENT
     rescue OptionParser::MissingArgument => e
-        puts e.message
-        puts parser
+        puts(e.message)
+        puts(parser)
         exit Exit::MISSING_ARGUMENT
     rescue OptionParser::AmbiguousOption => e
-        puts e.message
-        puts parser
+        puts(e.message)
+        puts(parser)
         exit Exit::AMBIGUOUS_ARGUMENT
     end
 
     if (args.empty?)
-        puts parser
+        puts(parser)
         exit Exit::MISSING_ARGUMENT
     elsif (!args.empty?)
-        puts parser
+        puts(parser)
         exit Exit::EXTRA_ARGUMENTS
     end
 
     return options
+end
+
+def subinfo(msg)
+    puts("[=] #{msg}".cyan)
+end
+
+def warn(msg)
+    puts("[-] #{msg}".yellow)
 end
 
 begin
@@ -100,17 +130,19 @@ rescue Errno::EPIPE
     # Do nothing. This can happen if piping to another program such as
     # less. Usually if less is closed before we're done with STDOUT.
 rescue Exception => e
-    $stderr.puts [
-        "Oops! Looks like an error has occured! Maybe the message",
-        "below will help. If not,"
-    ].join(" ")
-    $stderr.puts "you can use the --verbose flag to get a backtrace."
+    $stderr.puts(
+        [
+            "Oops! Looks like an error has occured! Maybe the",
+            "message below will help. If not,"
+        ].join(" ")
+    )
+    $stderr.puts("you can use the --verbose flag to get a backtrace.")
     $stderr.puts
 
-    $stderr.puts e.message
+    $stderr.puts(e.message)
     if (options["verbose"])
         e.backtrace.each do |line|
-            $stderr.puts line
+            $stderr.puts(line)
         end
     end
     exit Exit::EXCEPTION
