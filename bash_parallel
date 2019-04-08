@@ -114,7 +114,7 @@ EOF
 }
 
 declare -a args deps
-unset help
+unset help resume verbose
 color="true"
 deps+=("jq")
 # deps+=("todo")
