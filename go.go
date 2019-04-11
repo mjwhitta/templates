@@ -5,55 +5,39 @@ import (
     "os"
 
     "gitlab.com/mjwhitta/cli"
+    hl "gitlab.com/mjwhitta/hilighter/src"
 )
 
+const Version = "1.0.0"
+
 // Helpers begin
-func err(msg string) {
-    var color = "\x1b[31m"
-    if (nocolor) {color = ""}
-    fmt.Printf("%s[!] %s\x1b[0m\n", color, msg)
-}
-func errx(status int, msg string) {
-    err(msg)
-    os.Exit(status)
-}
-func good(msg string) {
-    var color = "\x1b[32m"
-    if (nocolor) {color = ""}
-    fmt.Printf("%s[+] %s\x1b[0m\n", color, msg)
-}
-func info(msg string) {
-    var color = "\x1b[37m"
-    if (nocolor) {color = ""}
-    fmt.Printf("%s[*] %s\x1b[0m\n", color, msg)
-}
-func subinfo(msg string) {
-    var color = "\x1b[36m"
-    if (nocolor) {color = ""}
-    fmt.Printf("%s[=] %s\x1b[0m\n", color, msg)
-}
-func warn(msg string) {
-    var color = "\x1b[33m"
-    if (nocolor) {color = ""}
-    fmt.Printf("%s[-] %s\x1b[0m\n", color, msg)
-}
+func err(msg string) {fmt.Print(hl.Red("[!] %s\n", msg))}
+func errx(status int, msg string) {err(msg); os.Exit(status)}
+func good(msg string) {fmt.Print(hl.Green("[+] %s\n", msg))}
+func info(msg string) {fmt.Print(hl.White("[*] %s\n", msg))}
+func subinfo(msg string) {fmt.Print(hl.Cyan("[=] %s\n", msg))}
+func warn(msg string) {fmt.Print(hl.Yellow("[-] %s\n", msg))}
 // Helpers end
 
 var nocolor bool
 var todo string
 var todolist cli.StringListVar
+var version bool
 
 func init() {
-    // Parse cli args
+    // Configure cli package
+    cli.Align = true
     cli.Banner = fmt.Sprintf(
         "Usage: %s [OPTIONS] <arg1>... [argN]",
         os.Args[0],
     )
     cli.Info = "TODO"
+
+    // Parse cli args
     cli.Bool(
         &nocolor,
         "",
-        "nocolor",
+        "no-color",
         false,
         "Disable colorized outout",
     )
@@ -64,16 +48,22 @@ func init() {
         "TODO",
         "Example for storing cli arg",
     )
+    cli.Bool(&version, "V", "version", false, "Show version")
     cli.Parse()
 
     // Validate cli args
-    if (cli.NArg() == 0) {
+    if (!version && (cli.NArg() == 0)) {
         cli.Usage(1)
     }
 }
 
 func main() {
-    for i := range cli.Args() {
-        good(cli.Arg(i))
+    if (version) {
+        fmt.Printf("Version: %s\n", Version)
+    } else {
+        // TODO
+        for i := range cli.Args() {
+            good(cli.Arg(i))
+        }
     }
 }
