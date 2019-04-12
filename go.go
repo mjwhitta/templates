@@ -21,7 +21,7 @@ func warn(msg string) {fmt.Print(hl.Yellow("[-] %s\n", msg))}
 
 var nocolor bool
 var todo string
-var todolist cli.StringListVar
+var todolist cli.StringList
 var version bool
 
 func init() {
@@ -34,21 +34,9 @@ func init() {
     cli.Info = "TODO"
 
     // Parse cli args
-    cli.Bool(
-        &nocolor,
-        "",
-        "no-color",
-        false,
-        "Disable colorized outout",
-    )
-    cli.String(
-        &todo,
-        "t",
-        "todo",
-        "TODO",
-        "Example for storing cli arg",
-    )
-    cli.Bool(&version, "V", "version", false, "Show version")
+    cli.Flag(&nocolor, "no-color", false, "Disable colorized outout")
+    cli.Flag(&todo, "t", "todo", "TODO", "Describe TODO")
+    cli.Flag(&version, "V", "version", false, "Show version")
     cli.Parse()
 
     // Validate cli args
