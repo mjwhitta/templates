@@ -27,16 +27,19 @@ var version bool
 func init() {
     // Configure cli package
     cli.Align = true
+    cli.Authors = []string{"Miles W <mjwhitta@some.domain>"}
     cli.Banner = fmt.Sprintf(
-        "Usage: %s [OPTIONS] <arg1>... [argN]",
+        "%s [OPTIONS] <arg1>... [argN]",
         os.Args[0],
     )
+    cli.BugEmail = "bugs@some.domain"
     cli.Info = "TODO"
+    cli.Title = "TODO"
 
     // Parse cli args
-    cli.Flag(&nocolor, "no-color", false, "Disable colorized outout")
-    cli.Flag(&todo, "t", "todo", "TODO", "Describe TODO")
-    cli.Flag(&version, "V", "version", false, "Show version")
+    cli.Flag(&nocolor, "no-color", false, "Disable colorized outout.")
+    cli.Flag(&todo, "t", "todo", "TODO", "Describe TODO.")
+    cli.Flag(&version, "V", "version", false, "Show version.")
     cli.Parse()
 
     // Validate cli args
