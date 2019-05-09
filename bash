@@ -31,7 +31,7 @@ TODO
 
 Options:
     -h, --help         Display this help message
-    --nocolor          Disable colorized output
+    --no-color         Disable colorized output
     -t, --todo         Example flag
     -t, --todo=TODO    Example for storing cli arg
 
@@ -52,7 +52,7 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         "--") shift && args+=("$@") && break ;;
         "-h"|"--help") help="true" ;;
-        "--nocolor") unset color ;;
+        "--no-color") unset color ;;
         # "-t"|"--todo") todo="true" ;;
         # "-t"|"--todo"*) todo="$(long_opt "$@")" || shift ;;
         *) args+=("$1") ;;

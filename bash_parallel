@@ -151,12 +151,6 @@ if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
     unset parallel
 fi
 
-# Cite if needed
-if [[ -n $parallel ]] && [[ ! -f "$HOME/.parallel/will-cite" ]]; then
-    mkdir -p "$HOME/.parallel"
-    parallel --citation
-fi
-
 # Save command line args
 # TODO
 
