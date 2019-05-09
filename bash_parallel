@@ -88,7 +88,7 @@ TODO
 
 Options:
     -h, --help           Display this help message
-    --nocolor            Disable colorized output
+    --no-color           Disable colorized output
     -r, --resume         Resume from a previous run
     -t, --threads=NUM    Use specified number of threads (default: 32)
     -t, --todo           Example flag
@@ -129,7 +129,7 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         "--") shift && args+=("$@") && break ;;
         "-h"|"--help") help="true" ;;
-        "--nocolor") unset color ;;
+        "--no-color") unset color ;;
         "-r"|"--resume") resume="--resume" ;;
         "-t"|"--threads"*) threads="$(long_opt "$@")" || shift ;;
         # "-t"|"--todo") todo="true" ;;

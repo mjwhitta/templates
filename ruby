@@ -59,8 +59,8 @@ def parse(args)
             exit Exit::GOOD
         end
 
-        opts.on("--nocolor", "Disable colorized output") do
-            Hilighter.disable
+        opts.on("--[no-]color", "Disable colorized output") do |c|
+            Hilighter.disable if (c)
         end
 
         opts.on(
