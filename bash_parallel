@@ -151,6 +151,16 @@ if [[ -n $parallel ]] && [[ -z $(command -v parallel) ]]; then
     unset parallel
 fi
 
+# Cite if needed
+if [[ -n $parallel ]] && [[ ! -f "$HOME/.parallel/will-cite" ]]; then
+    pvers="$(parallel --version | grep -ioPs "parallel \K\d+")"
+    if [[ $pvers -lt 20181122 ]]; then
+        mkdir -p "$HOME/.parallel"
+        parallel --citation
+    fi
+    unset pvers
+fi
+
 # Save command line args
 # TODO
 
