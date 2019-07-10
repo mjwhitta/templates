@@ -47,10 +47,11 @@ set argv $params
 # Input validation
 if {$argc != 0} {usage 2}
 
+spawn "TODO"
+
 expect {
     "prompt1? " {send "Y\r"; exp_continue}
     "prompt2? " {send "N\r"}
+    "prompt3? " {interact}
     "error" {exit}
 }
-
-interact
