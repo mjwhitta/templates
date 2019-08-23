@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"gitlab.com/mjwhitta/cli"
 	hl "gitlab.com/mjwhitta/hilighter/src"
@@ -20,6 +21,7 @@ func good(msg string)    { fmt.Print(hl.Green("[+] %s\n", msg)) }
 func info(msg string)    { fmt.Print(hl.White("[*] %s\n", msg)) }
 func subinfo(msg string) { fmt.Print(hl.Cyan("[=] %s\n", msg)) }
 func warn(msg string)    { fmt.Print(hl.Yellow("[-] %s\n", msg)) }
+
 // Helpers end
 
 var nocolor bool
@@ -29,14 +31,21 @@ var version bool
 
 func init() {
 	// Configure cli package
-	cli.Align = true
+	cli.Align = false // Defaults to false
 	cli.Authors = []string{"Miles W <mjwhitta@some.domain>"}
-	cli.Banner = fmt.Sprintf(
-		"%s [OPTIONS] <arg1>... [argN]",
-		os.Args[0],
-	)
+	cli.Banner = fmt.Sprintf("%s [OPTIONS] <arg>", os.Args[0])
 	cli.BugEmail = "bugs@some.domain"
-	cli.Info = "TODO"
+	cli.ExitStatus = strings.Join(
+		[]string{
+			"Normally the exit status is 0. In the event of invalid",
+			"or missing arguments, the exit status will be non-zero.",
+		},
+		" ",
+	)
+	cli.Info = strings.Join([]string{"TODO"}, "")
+	cli.MaxWidth = 80 // Defaults to 80
+	// cli.SeeAlso = []string{"TODO"}
+	cli.TabWidth = 4 // Defaults to 4
 	cli.Title = "TODO"
 
 	// Parse cli args
