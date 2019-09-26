@@ -22,7 +22,7 @@ groupmod -g "$gid" "$gname" 2>/dev/null
 
 # Create user if they don't exist
 [[ -z $old_uid ]] || usermod -g "$gid" -l "$uname" "$old_uid"
-useradd -g "$gid" -ou "$uid" "$uname" 2>/dev/null
+useradd -d /home/user -g "$gid" -mou "$uid" "$uname" 2>/dev/null
 
 # Sudo (a few different ways)
 groupadd -f sudo
@@ -30,9 +30,14 @@ groupadd -f wheel
 usermod -a -G sudo,wheel "$uname"
 echo "$uname ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/$uname"
 
+# Store cmd
+cmd="$*"
+[[ -n $cmd ]] || cmd="$(command -v bash)"
+[[ -n $cmd ]] || cmd="sh"
+
 # Run command as specified user
 if [[ -n $(command -v sudo) ]]; then
-    sudo -u "$uname" "$@"
+    sudo -u "$uname" $cmd
 else
-    su -c "$@" "$uname"
+    su -c "$cmd" "$uname"
 fi
