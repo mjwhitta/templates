@@ -21,8 +21,11 @@ groupadd -f "$gname"
 groupmod -g "$gid" "$gname" 2>/dev/null
 
 # Create user if they don't exist
-[[ -z $old_uid ]] || usermod -g "$gid" -l "$uname" "$old_uid"
-useradd -d /home/user -g "$gid" -mou "$uid" "$uname" 2>/dev/null
+if [[ -z $old_uid ]]; then
+    useradd -d /home/user -g "$gid" -mou "$uid" "$uname"
+else
+    usermod -d /home/user -g "$gid" -l "$uname" -m "$old_uid"
+fi
 
 # Sudo (a few different ways)
 groupadd -f sudo
