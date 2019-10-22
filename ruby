@@ -60,7 +60,7 @@ def parse(args)
         end
 
         opts.on("--[no-]color", "Disable colorized output") do |c|
-            Hilighter.disable if (c)
+            Hilighter.disable if (!c)
         end
 
         opts.on(
