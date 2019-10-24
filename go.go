@@ -6,21 +6,22 @@ import (
 	"strings"
 
 	"gitlab.com/mjwhitta/cli"
-	hl "gitlab.com/mjwhitta/hilighter/src"
+	hl "gitlab.com/mjwhitta/hilighter"
 )
 
 const Version = "1.0.0"
 
 // Helpers begin
-func err(msg string) { fmt.Print(hl.Red("[!] %s\n", msg)) }
+
+func err(msg string) { fmt.Println(hl.Red("[!] %s", msg)) }
 func errx(status int, msg string) {
 	err(msg)
 	os.Exit(status)
 }
-func good(msg string)    { fmt.Print(hl.Green("[+] %s\n", msg)) }
-func info(msg string)    { fmt.Print(hl.White("[*] %s\n", msg)) }
-func subinfo(msg string) { fmt.Print(hl.Cyan("[=] %s\n", msg)) }
-func warn(msg string)    { fmt.Print(hl.Yellow("[-] %s\n", msg)) }
+func good(msg string)    { fmt.Println(hl.Green("[+] %s", msg)) }
+func info(msg string)    { fmt.Println(hl.White("[*] %s", msg)) }
+func subinfo(msg string) { fmt.Println(hl.Cyan("[=] %s", msg)) }
+func warn(msg string)    { fmt.Println(hl.Yellow("[-] %s", msg)) }
 
 // Helpers end
 
@@ -32,9 +33,9 @@ var version bool
 func init() {
 	// Configure cli package
 	cli.Align = false // Defaults to false
-	cli.Authors = []string{"Miles W <mjwhitta@some.domain>"}
+	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
 	cli.Banner = fmt.Sprintf("%s [OPTIONS] <arg>", os.Args[0])
-	cli.BugEmail = "bugs@some.domain"
+	cli.BugEmail = "todo.bugs@whitta.dev"
 	cli.ExitStatus = strings.Join(
 		[]string{
 			"Normally the exit status is 0. In the event of invalid",
@@ -42,15 +43,16 @@ func init() {
 		},
 		" ",
 	)
-	cli.Info = strings.Join([]string{"TODO"}, "")
+	cli.Info = strings.Join([]string{"TODO"}, " ")
 	cli.MaxWidth = 80 // Defaults to 80
 	// cli.SeeAlso = []string{"TODO"}
 	cli.TabWidth = 4 // Defaults to 4
 	cli.Title = "TODO"
 
-	// Parse cli args
-	cli.Flag(&nocolor, "no-color", false, "Disable colorized outout.")
+	// Parse cli flags
+	cli.Flag(&nocolor, "no-color", false, "Disable colorized output.")
 	cli.Flag(&todo, "t", "todo", "TODO", "Describe TODO.")
+	cli.Flag(&todolist, "todolist", "Describe TODOlist.")
 	cli.Flag(&version, "V", "version", false, "Show version.")
 	cli.Parse()
 
@@ -61,12 +63,24 @@ func init() {
 }
 
 func main() {
+	hl.Disable = nocolor
+
+	defer func() {
+		if r := recover(); r != nil {
+			err(r.(error).Error())
+		}
+	}()
+
 	if version {
-		fmt.Printf("Version: %s\n", Version)
+		fmt.Println("Version: " + Version)
 	} else {
 		// TODO
 		for i := range cli.Args() {
 			good(cli.Arg(i))
+		}
+
+		for i := range todolist {
+			warn(todolist[i])
 		}
 	}
 }
