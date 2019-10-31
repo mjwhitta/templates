@@ -2,10 +2,10 @@
 :INPUT DROP [0:0]
 :FORWARD DROP [0:0]
 :OUTPUT ACCEPT [0:0]
-:reject - [0:0]
-:synflood - [0:0]
-:tcp - [0:0]
-:udp - [0:0]
+:HARDPASS - [0:0]
+:SYNFLOOD - [0:0]
+:TCP - [0:0]
+:UDP - [0:0]
 # Allow loopback
 -A INPUT -i lo -j ACCEPT
 # Allow established
@@ -17,23 +17,23 @@
 # Allow IPv6 ICMP for router advertisements (add needed subnets)
 -A INPUT -s fe80::/10 -p ipv6-icmp -j ACCEPT
 # Jump to tcp table for new tcp
--A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m conntrack --ctstate NEW -j tcp
+-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m conntrack --ctstate NEW -j TCP
 # Jump to udp table for new udp
--A INPUT -p udp -m conntrack --ctstate NEW -j udp
+-A INPUT -p udp -m conntrack --ctstate NEW -j UDP
 # Otherwise reject
--A INPUT -j reject
--A reject -p tcp -j REJECT --reject-with tcp-reset
--A reject -p udp -j REJECT --reject-with icmp6-port-unreachable
--A reject -j REJECT --reject-with icmp6-port-unreachable
+-A INPUT -j HARDPASS
+-A HARDPASS -p tcp -j REJECT --reject-with tcp-reset
+-A HARDPASS -p udp -j REJECT --reject-with icmp6-port-unreachable
+-A HARDPASS -j REJECT --reject-with icmp6-port-unreachable
 # Protect from SYN flood
--A synflood -m limit --limit 16/min --limit-burst 32 -j RETURN
--A synflood -j reject
+-A SYNFLOOD -m limit --limit 16/min --limit-burst 32 -j RETURN
+-A SYNFLOOD -j HARDPASS
 # Check for SYN flood
--A tcp -j synflood
+-A TCP -j SYNFLOOD
 # Allow SSH
--A tcp -p tcp -m multiport --dports 22 -j ACCEPT
+-A TCP -p tcp -m multiport --dports 22 -j ACCEPT
 # Allow DHCPv6 (add needed subnets)
--A udp -s fe80::/10 -p udp -m udp --dport 546 -m state --state NEW -j ACCEPT
+-A UDP -s fe80::/10 -p udp -m udp --dport 546 -m state --state NEW -j ACCEPT
 COMMIT
 *raw
 :PREROUTING ACCEPT [0:0]
