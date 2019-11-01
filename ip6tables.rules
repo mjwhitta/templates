@@ -23,7 +23,7 @@
 # Otherwise reject
 -A INPUT -j HARDPASS
 # Allow established
-# -A FORWARD -m conntrack --ctstate DNAT,RELATED,ESTABLISHED -j ACCEPT
+# -A FORWARD -m conntrack --ctstate DNAT,ESTABLISHED,RELATED -j ACCEPT
 # Drop invalid
 # -A FORWARD -m conntrack --ctstate INVALID -j DROP
 # Otherwise reject
