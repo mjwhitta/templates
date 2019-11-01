@@ -9,7 +9,7 @@
 # Allow loopback
 -A INPUT -i lo -j ACCEPT
 # Allow established
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 # Drop invalid
 -A INPUT -m conntrack --ctstate INVALID -j DROP
 # Allow ping
@@ -20,23 +20,34 @@
 -A INPUT -p udp -m conntrack --ctstate NEW -j UDP
 # Otherwise reject
 -A INPUT -j HARDPASS
+# Allow established
+# -A FORWARD -m conntrack --ctstate DNAT,RELATED,ESTABLISHED -j ACCEPT
+# Drop invalid
+# -A FORWARD -m conntrack --ctstate INVALID -j DROP
+# Otherwise reject
+#-A FORWARD -j HARDPASS
 -A HARDPASS -p tcp -j REJECT --reject-with tcp-reset
 -A HARDPASS -p udp -j REJECT --reject-with icmp-port-unreachable
 -A HARDPASS -j REJECT --reject-with icmp-proto-unreachable
 # Protect from SYN flood
--A SYNFLOOD -m limit --limit 16/min --limit-burst 32 -j RETURN
+-A SYNFLOOD -m limit --limit 64/min --limit-burst 64 -j RETURN
 -A SYNFLOOD -j HARDPASS
 # Check for SYN flood
 -A TCP -j SYNFLOOD
 # Allow:
 # - SSH (22)
 -A TCP -p tcp -m multiport --dports 22 -j ACCEPT
+# Allow:
+# - OpenVPN (1194)
+# -A UDP -p udp -m multiport --dports 1194 -j ACCEPT
 COMMIT
 *nat
 :PREROUTING ACCEPT [0:0]
 :INPUT ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 :POSTROUTING ACCEPT [0:0]
+# Masquerade
+# -A POSTROUTING -o eth0 -j MASQUERADE
 COMMIT
 *raw
 :PREROUTING ACCEPT [0:0]
