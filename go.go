@@ -33,7 +33,10 @@ func init() {
 	// Configure cli package
 	cli.Align = false // Defaults to false
 	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
-	cli.Banner = hl.Sprintf("%s [OPTIONS] <arg>", os.Args[0])
+	cli.Banner = hl.Sprintf(
+		"%s [OPTIONS] <arg1>... [argN]",
+		os.Args[0],
+	)
 	cli.BugEmail = "todo.bugs@whitta.dev"
 	cli.ExitStatus = strings.Join(
 		[]string{
@@ -55,7 +58,7 @@ func init() {
 	cli.Flag(&version, "V", "version", false, "Show version.")
 	cli.Parse()
 
-	// Validate cli args
+	// Validate cli args (todo)
 	if !version && (cli.NArg() == 0) {
 		cli.Usage(1)
 	}
