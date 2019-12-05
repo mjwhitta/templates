@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -13,15 +12,15 @@ const Version = "1.0.0"
 
 // Helpers begin
 
-func err(msg string) { fmt.Println(hl.Red("[!] %s", msg)) }
+func err(msg string) { hl.PrintlnRed("[!] %s", msg) }
 func errx(status int, msg string) {
 	err(msg)
 	os.Exit(status)
 }
-func good(msg string)    { fmt.Println(hl.Green("[+] %s", msg)) }
-func info(msg string)    { fmt.Println(hl.White("[*] %s", msg)) }
-func subinfo(msg string) { fmt.Println(hl.Cyan("[=] %s", msg)) }
-func warn(msg string)    { fmt.Println(hl.Yellow("[-] %s", msg)) }
+func good(msg string)    { hl.PrintlnGreen("[+] %s", msg) }
+func info(msg string)    { hl.PrintlnWhite("[*] %s", msg) }
+func subinfo(msg string) { hl.PrintlnCyan("[=] %s", msg) }
+func warn(msg string)    { hl.PrintlnYellow("[-] %s", msg) }
 
 // Helpers end
 
@@ -34,7 +33,7 @@ func init() {
 	// Configure cli package
 	cli.Align = false // Defaults to false
 	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
-	cli.Banner = fmt.Sprintf("%s [OPTIONS] <arg>", os.Args[0])
+	cli.Banner = hl.Sprintf("%s [OPTIONS] <arg>", os.Args[0])
 	cli.BugEmail = "todo.bugs@whitta.dev"
 	cli.ExitStatus = strings.Join(
 		[]string{
@@ -72,7 +71,7 @@ func main() {
 	}()
 
 	if version {
-		fmt.Println("Version: " + Version)
+		hl.Println("Version: " + Version)
 	} else {
 		// TODO
 		for i := range cli.Args() {
