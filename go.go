@@ -8,8 +8,6 @@ import (
 	hl "gitlab.com/mjwhitta/hilighter"
 )
 
-const Version = "1.0.0"
-
 // Helpers begin
 
 func err(msg string) { hl.PrintlnRed("[!] %s", msg) }
@@ -24,65 +22,114 @@ func warn(msg string)    { hl.PrintlnYellow("[-] %s", msg) }
 
 // Helpers end
 
-var nocolor bool
-var todo string
-var todolist cli.StringList
-var version bool
+// Exit status
+const (
+	Good             int = 0
+	InvalidOption    int = 1
+	InvalidArgument  int = 2
+	MissingArguments int = 3
+	ExtraArguments   int = 4
+	Exception        int = 5
+)
+
+// Flags
+type cliFlags struct {
+	nocolor  bool
+	todo     string
+	todolist cli.StringList
+	verbose  bool
+	version  bool
+}
+
+var flags cliFlags
+
+const Version = "1.0.0"
 
 func init() {
 	// Configure cli package
-	cli.Align = false // Defaults to false
+	cli.Align = true // Defaults to false
 	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
 	cli.Banner = hl.Sprintf(
-		"%s [OPTIONS] <arg1>... [argN]",
+		"%s [OPTIONS] <todo1> <todo2>",
 		os.Args[0],
 	)
-	cli.BugEmail = "todo.bugs@whitta.dev"
+	cli.BugEmail = "TODO.bugs@whitta.dev"
 	cli.ExitStatus = strings.Join(
 		[]string{
-			"Normally the exit status is 0. In the event of invalid",
-			"or missing arguments, the exit status will be non-zero.",
+			"Normally the exit status is 0. In the event of an error",
+			"the exit status will be one of the below:\n\n",
+			"1: Invalid option\n",
+			"2: Invalid argument\n",
+			"3: Missing arguments\n",
+			"4: Extra arguments\n",
+			"5: Exception",
 		},
 		" ",
 	)
-	cli.Info = strings.Join([]string{"TODO"}, " ")
-	cli.MaxWidth = 80 // Defaults to 80
-	// cli.SeeAlso = []string{"TODO"}
-	cli.TabWidth = 4 // Defaults to 4
+	cli.Info = strings.Join([]string{"TODO."}, " ")
+	// cli.MaxWidth = 80 // Defaults to 80
+	cli.SeeAlso = []string{"TODO"}
+	// cli.TabWidth = 4 // Defaults to 4
 	cli.Title = "TODO"
 
 	// Parse cli flags
-	cli.Flag(&nocolor, "no-color", false, "Disable colorized output.")
-	cli.Flag(&todo, "t", "todo", "TODO", "Describe TODO.")
-	cli.Flag(&todolist, "todolist", "Describe TODOlist.")
-	cli.Flag(&version, "V", "version", false, "Show version.")
+	cli.Flag(
+		&flags.nocolor,
+		"no-color",
+		false,
+		"Disable colorized output.",
+	)
+	cli.Flag(&flags.todo, "t", "todo", "TODO", "Describe TODO.")
+	cli.Flag(&flags.todolist, "todolist", "Describe TODOlist.")
+	cli.Flag(
+		&flags.verbose,
+		"v",
+		"verbose",
+		false,
+		"Show show stacktrace if error.",
+	)
+	cli.Flag(&flags.version, "V", "version", false, "Show version.")
 	cli.Parse()
+}
 
-	// Validate cli args (todo)
-	if !version && (cli.NArg() == 0) {
-		cli.Usage(1)
+// Process cli flags and ensure no issues
+func validate() {
+	// Short circuit if version was requested
+	if flags.version {
+		hl.Printf("TODO version %s\n", Version)
+		os.Exit(Good)
+	}
+
+	// Validate cli flags
+	if cli.NArg() < 2 {
+		cli.Usage(MissingArguments)
+	} else if cli.NArg() == 2 {
+		// TODO
+	} else if cli.NArg() > 2 {
+		cli.Usage(ExtraArguments)
 	}
 }
 
 func main() {
-	hl.Disable = nocolor
+	hl.Disable = flags.nocolor
 
 	defer func() {
 		if r := recover(); r != nil {
-			err(r.(error).Error())
+			if flags.verbose {
+				panic(r.(error).Error())
+			}
+			errx(Exception, r.(error).Error())
 		}
 	}()
 
-	if version {
-		hl.Println("Version: " + Version)
-	} else {
-		// TODO
-		for i := range cli.Args() {
-			good(cli.Arg(i))
-		}
+	validate()
 
-		for i := range todolist {
-			warn(todolist[i])
-		}
+	// TODO
+	for i := range cli.Args() {
+		good(cli.Arg(i))
+	}
+
+	for i := range flags.todolist {
+		warn(flags.todolist[i])
 	}
 }
