@@ -80,6 +80,8 @@ func init() {
 
 // Process cli flags and ensure no issues
 func validate() {
+	hl.Disable(flags.nocolor)
+
 	// Short circuit if version was requested
 	if flags.version {
 		hl.Printf("TODO version %s\n", Version)
@@ -97,8 +99,6 @@ func validate() {
 }
 
 func main() {
-	hl.Disable = flags.nocolor
-
 	defer func() {
 		if r := recover(); r != nil {
 			if flags.verbose {
