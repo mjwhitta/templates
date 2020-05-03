@@ -8,16 +8,6 @@ import (
 	hl "gitlab.com/mjwhitta/hilighter"
 )
 
-// Exit status
-const (
-	Good             int = 0
-	InvalidOption    int = 1
-	InvalidArgument  int = 2
-	MissingArguments int = 3
-	ExtraArguments   int = 4
-	Exception        int = 5
-)
-
 // Flags
 type cliFlags struct {
 	nocolor  bool
@@ -28,8 +18,6 @@ type cliFlags struct {
 }
 
 var flags cliFlags
-
-const Version = "1.0.0"
 
 func init() {
 	// Configure cli package
@@ -95,27 +83,5 @@ func validate() {
 		// TODO
 	} else if cli.NArg() > 2 {
 		cli.Usage(ExtraArguments)
-	}
-}
-
-func main() {
-	defer func() {
-		if r := recover(); r != nil {
-			if flags.verbose {
-				panic(r.(error).Error())
-			}
-			errx(Exception, r.(error).Error())
-		}
-	}()
-
-	validate()
-
-	// TODO
-	for i := range cli.Args() {
-		good(cli.Arg(i))
-	}
-
-	for i := range flags.todolist {
-		warn(flags.todolist[i])
 	}
 }
