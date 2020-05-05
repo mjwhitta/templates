@@ -1,6 +1,9 @@
 package main
 
-import "gitlab.com/mjwhitta/cli"
+import (
+	"gitlab.com/mjwhitta/cli"
+	"gitlab.com/mjwhitta/log"
+)
 
 // Exit status
 const (
@@ -18,7 +21,7 @@ func main() {
 			if flags.verbose {
 				panic(r.(error).Error())
 			}
-			errx(Exception, r.(error).Error())
+			log.ErrX(Exception, r.(error).Error())
 		}
 	}()
 
@@ -26,10 +29,10 @@ func main() {
 
 	// TODO
 	for i := range cli.Args() {
-		good(cli.Arg(i))
+		log.Good(cli.Arg(i))
 	}
 
 	for i := range flags.todolist {
-		warn(flags.todolist[i])
+		log.Warn(flags.todolist[i])
 	}
 }
