@@ -32,11 +32,11 @@ func init() {
 		[]string{
 			"Normally the exit status is 0. In the event of an error",
 			"the exit status will be one of the below:\n\n",
-			"1: Invalid option\n",
-			"2: Invalid argument\n",
-			"3: Missing arguments\n",
-			"4: Extra arguments\n",
-			"5: Exception",
+			hl.Sprintf("%d: Invalid option\n", InvalidOption),
+			hl.Sprintf("%d: Invalid argument\n", InvalidArgument),
+			hl.Sprintf("%d: Missing arguments\n", MissingArguments),
+			hl.Sprintf("%d: Extra arguments\n", ExtraArguments),
+			hl.Sprintf("%d: Exception", Exception),
 		},
 		" ",
 	)

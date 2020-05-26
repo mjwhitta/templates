@@ -7,12 +7,12 @@ import (
 
 // Exit status
 const (
-	Good             int = 0
-	InvalidOption    int = 1
-	InvalidArgument  int = 2
-	MissingArguments int = 3
-	ExtraArguments   int = 4
-	Exception        int = 5
+	Good = iota
+	InvalidOption
+	InvalidArgument
+	MissingArguments
+	ExtraArguments
+	Exception
 )
 
 func main() {
