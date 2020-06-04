@@ -15,7 +15,7 @@
 # Allow ping
 -A INPUT -p icmp -m icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
 # Jump to tcp table for new tcp
--A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m conntrack --ctstate NEW -j TCP
+-A INPUT -p tcp -m tcp --tcp-flags ACK,FIN,RST,SYN SYN -m conntrack --ctstate NEW -j TCP
 # Jump to udp table for new udp
 -A INPUT -p udp -m conntrack --ctstate NEW -j UDP
 # Otherwise reject

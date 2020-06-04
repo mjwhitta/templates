@@ -17,7 +17,7 @@
 # Allow IPv6 ICMP for router advertisements (add needed subnets)
 -A INPUT -s fe80::/10 -p ipv6-icmp -j ACCEPT
 # Jump to tcp table for new tcp
--A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m conntrack --ctstate NEW -j TCP
+-A INPUT -p tcp -m tcp --tcp-flags ACK,FIN,RST,SYN SYN -m conntrack --ctstate NEW -j TCP
 # Jump to udp table for new udp
 -A INPUT -p udp -m conntrack --ctstate NEW -j UDP
 # Otherwise reject
