@@ -31,6 +31,7 @@ fi
 groupadd -f sudo
 groupadd -f wheel
 usermod -a -G sudo,wheel "$uname"
+mkdir -p /etc/sudoers.d
 echo "$uname ALL=(ALL) NOPASSWD: ALL" >"/etc/sudoers.d/$uname"
 
 # Store cmd
