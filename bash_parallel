@@ -72,8 +72,8 @@ json_get() {
 long_opt() {
     local arg shift="0"
     case "$1" in
-        "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || usage 123 ;;
-        *) shift="1"; shift; [[ $# -gt 0 ]] || usage 123; arg="$1" ;;
+        "--"*"="*) arg="${1#*=}"; [[ -n $arg ]] || return 123 ;;
+        *) shift="1"; shift; [[ $# -gt 0 ]] || return 123; arg="$1" ;;
     esac
     echo "$arg"
     return $shift
@@ -139,9 +139,23 @@ while [[ $# -gt 0 ]]; do
         "-h"|"--help") help="true" ;;
         "--no-color") unset color ;;
         "-r"|"--resume") resume="--resume" ;;
-        "-t"|"--threads"*) threads="$(long_opt "$@")" || shift ;;
+        "-t"|"--threads"*)
+            threads="$(long_opt "$@")"
+            case "$?" in
+                0) ;;
+                1) shift ;;
+                *) usage $? ;;
+            esac
+            ;;
         # "-t"|"--todo") todo="true" ;;
-        # "-t"|"--todo"*) todo="$(long_opt "$@")" || shift ;;
+        # "-t"|"--todo"*)
+        #     todo="$(long_opt "$@")"
+        #     case "$?" in
+        #         0) ;;
+        #         1) shift ;;
+        #         *) usage $? ;;
+        #     esac
+        #     ;;
         "-v"|"--verbose") verbose="true" ;;
         *) args+=("$1") ;;
     esac
