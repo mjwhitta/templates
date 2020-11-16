@@ -58,19 +58,17 @@ check_deps
 # Parse command line options
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        "--") shift && args+=("$@") && break ;;
+        "--") shift; args+=("$@"); break ;;
         "-h"|"--help") help="true" ;;
         "--no-color") unset color ;;
         # "-t"|"--todo") todo="true" ;;
-        # "-t"|"--todo"*)
-        #     todo="$(long_opt "$@")"
-        #     case "$?" in
-        #         0) ;;
-        #         1) shift ;;
-        #         *) usage $? ;;
-        #     esac
-        #     ;;
+        # "-t"|"--todo"*) todo="$(long_opt "$@")" ;;
         *) args+=("$1") ;;
+    esac
+    case "$?" in
+        0) ;;
+        1) shift ;;
+        *) usage $? ;;
     esac
     shift
 done
