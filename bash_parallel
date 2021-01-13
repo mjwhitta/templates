@@ -143,14 +143,7 @@ while [[ $# -gt 0 ]]; do
         "-h"|"--help") help="true" ;;
         "--no-color") unset color ;;
         "-r"|"--resume") resume="--resume" ;;
-        "-t"|"--threads"*)
-            threads="$(long_opt "$@")"
-            case "$?" in
-                0) ;;
-                1) shift ;;
-                *) usage $? ;;
-            esac
-            ;;
+        "-t"|"--threads"*) threads="$(long_opt "$@")" ;;
         # "-t"|"--todo") todo="true" ;;
         # "-t"|"--todo"*) todo="$(long_opt "$@")" ;;
         "-v"|"--verbose") verbose="true" ;;
