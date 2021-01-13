@@ -128,6 +128,7 @@ declare -a args deps
 unset help resume verbose
 color="true"
 deps+=("jq")
+deps+=("sha256sum")
 # deps+=("todo")
 parallel="true"
 threads="32"
