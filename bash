@@ -35,9 +35,10 @@ usage() {
     cat <<EOF
 Usage: ${0##*/} [OPTIONS]
 
-TODO
+DESCRIPTION
+    TODO
 
-Options:
+OPTIONS
     -h, --help         Display this help message
     --no-color         Disable colorized output
     -t, --todo         Example flag
@@ -47,13 +48,9 @@ EOF
     exit "$1"
 }
 
-declare -a args deps
+declare -a args
 unset help
 color="true"
-# deps+=("todo")
-
-# Check for missing dependencies
-check_deps
 
 # Parse command line options
 while [[ $# -gt 0 ]]; do
@@ -74,8 +71,15 @@ while [[ $# -gt 0 ]]; do
 done
 [[ ${#args[@]} -eq 0 ]] || set -- "${args[@]}"
 
-# Check for valid params
+# Help info
 [[ -z $help ]] || usage 0
+
+# Check for missing dependencies
+declare -a deps
+# deps+=("todo")
+check_deps
+
+# Check for valid params
 [[ $# -eq 0 ]] || usage 1
 
 # TODO

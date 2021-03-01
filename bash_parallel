@@ -95,9 +95,10 @@ usage() {
     cat <<EOF
 Usage: ${0##*/} [OPTIONS] <arg1>... [argN]
 
-TODO
+DESCRIPTION
+    TODO
 
-Options:
+OPTIONS
     -h, --help           Display this help message
     --no-color           Disable colorized output
     -r, --resume         Resume from a previous run
@@ -124,17 +125,11 @@ write_resume_file() {
 EOF
 }
 
-declare -a args deps
+declare -a args
 unset help resume verbose
 color="true"
-deps+=("jq")
-deps+=("sha256sum")
-# deps+=("todo")
 parallel="true"
 threads="32"
-
-# Check for missing dependencies
-check_deps
 
 # Parse command line options
 while [[ $# -gt 0 ]]; do
@@ -158,8 +153,17 @@ while [[ $# -gt 0 ]]; do
 done
 [[ ${#args[@]} -eq 0 ]] || set -- "${args[@]}"
 
-# Check for valid params
+# Help info
 [[ -z $help ]] || usage 0
+
+# Check for missing dependencies
+declare -a deps
+deps+=("jq")
+deps+=("sha256sum")
+# deps+=("todo")
+check_deps
+
+# Check for valid params
 [[ $# -gt 0 ]] || [[ -n $resume ]] || usage 1
 
 # Determine parallel situation
