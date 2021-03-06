@@ -134,7 +134,7 @@ threads="32"
 # Parse command line options
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        "--") shift && args+=("$@") && break ;;
+        "--") shift; args+=("$@"); break ;;
         "-h"|"--help") help="true" ;;
         "--no-color") unset color ;;
         "-r"|"--resume") resume="--resume" ;;
