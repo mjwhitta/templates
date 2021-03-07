@@ -158,6 +158,7 @@ done
 
 # Check for missing dependencies
 declare -a deps
+deps+=("awk")
 deps+=("jq")
 deps+=("sha256sum")
 # deps+=("todo")
