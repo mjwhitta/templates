@@ -36,7 +36,7 @@ usage() {
 Usage: ${0##*/} [OPTIONS]
 
 DESCRIPTION
-    TODO
+    TODO.
 
 OPTIONS
     -h, --help         Display this help message

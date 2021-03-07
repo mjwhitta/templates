@@ -96,7 +96,7 @@ usage() {
 Usage: ${0##*/} [OPTIONS] <arg1>... [argN]
 
 DESCRIPTION
-    TODO
+    TODO.
 
 OPTIONS
     -h, --help           Display this help message
