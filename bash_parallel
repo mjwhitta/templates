@@ -100,7 +100,7 @@ DESCRIPTION
 
 OPTIONS
     -h, --help           Display this help message
-    --no-color           Disable colorized output
+        --no-color       Disable colorized output
     -r, --resume         Resume from a previous run
     -t, --threads=NUM    Use specified number of threads (default: 32)
     -t, --todo           Example flag

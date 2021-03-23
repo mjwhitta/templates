@@ -40,7 +40,7 @@ DESCRIPTION
 
 OPTIONS
     -h, --help         Display this help message
-    --no-color         Disable colorized output
+        --no-color     Disable colorized output
     -t, --todo         Example flag
     -t, --todo=TODO    Example for storing cli arg
 
