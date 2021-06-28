@@ -228,6 +228,7 @@ err() { echo -e "\r${color:+\e[31m}[!] \$*${color:+\e[0m}\e[K" >&2; }
 errx() { err "\${*:2}"; exit "\$1"; }
 good() { echo -e "\r${color:+\e[32m}[+] \$*${color:+\e[0m}\e[K"; }
 info() { echo -e "\r${color:+\e[37m}[*] \$*${color:+\e[0m}\e[K"; }
+msg() { echo -e "\r\$*\e[K"; }
 subinfo() { echo -e "\r${color:+\e[36m}[=] \$*${color:+\e[0m}\e[K"; }
 warn() { echo -e "\r${color:+\e[33m}[-] \$*${color:+\e[0m}\e[K"; }
 ### Helpers end
