@@ -1,15 +1,26 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
 	"gitlab.com/mjwhitta/cli"
-	hl "gitlab.com/mjwhitta/hilighter"
+)
+
+// Exit status
+const (
+	Good = iota
+	InvalidOption
+	MissingOption
+	InvalidArgument
+	MissingArgument
+	ExtraArgument
+	Exception
 )
 
 // Flags
-type cliFlags struct {
+type flags struct {
 	nocolor  bool
 	todo     string
 	todolist cli.StringList
@@ -17,13 +28,11 @@ type cliFlags struct {
 	version  bool
 }
 
-var flags cliFlags
-
 func init() {
 	// Configure cli package
 	cli.Align = true // Defaults to false
 	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
-	cli.Banner = hl.Sprintf(
+	cli.Banner = fmt.Sprintf(
 		"%s [OPTIONS] <todo1> <todo2>",
 		os.Args[0],
 	)
@@ -32,11 +41,12 @@ func init() {
 		[]string{
 			"Normally the exit status is 0. In the event of an error",
 			"the exit status will be one of the below:\n\n",
-			hl.Sprintf("%d: Invalid option\n", InvalidOption),
-			hl.Sprintf("%d: Invalid argument\n", InvalidArgument),
-			hl.Sprintf("%d: Missing arguments\n", MissingArguments),
-			hl.Sprintf("%d: Extra arguments\n", ExtraArguments),
-			hl.Sprintf("%d: Exception", Exception),
+			fmt.Sprintf("%d: Invalid option\n", InvalidOption),
+			fmt.Sprintf("%d: Missing option\n", MissingOption),
+			fmt.Sprintf("%d: Invalid argument\n", InvalidArgument),
+			fmt.Sprintf("%d: Missing argument\n", MissingArguments),
+			fmt.Sprintf("%d: Extra argument\n", ExtraArguments),
+			fmt.Sprintf("%d: Exception", Exception),
 		},
 		" ",
 	)
@@ -68,11 +78,11 @@ func init() {
 
 // Process cli flags and ensure no issues
 func validate() {
-	hl.Disable(flags.nocolor)
+	fmt.Disable(flags.nocolor)
 
 	// Short circuit if version was requested
 	if flags.version {
-		hl.Printf("TODO version %s\n", Version)
+		fmt.Printf("TODO version %s\n", Version)
 		os.Exit(Good)
 	}
 
@@ -82,6 +92,6 @@ func validate() {
 	} else if cli.NArg() == 2 {
 		// TODO
 	} else if cli.NArg() > 2 {
-		cli.Usage(ExtraArguments)
+		cli.Usage(ExtraArgument)
 	}
 }

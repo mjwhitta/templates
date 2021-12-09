@@ -5,16 +5,6 @@ import (
 	"gitlab.com/mjwhitta/log"
 )
 
-// Exit status
-const (
-	Good = iota
-	InvalidOption
-	InvalidArgument
-	MissingArguments
-	ExtraArguments
-	Exception
-)
-
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
