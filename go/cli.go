@@ -20,7 +20,7 @@ const (
 )
 
 // Flags
-type flags struct {
+var flags struct {
 	nocolor  bool
 	todo     string
 	todolist cli.StringList
@@ -70,7 +70,7 @@ func init() {
 		"v",
 		"verbose",
 		false,
-		"Show show stacktrace if error.",
+		"Show stacktrace, if error.",
 	)
 	cli.Flag(&flags.version, "V", "version", false, "Show version.")
 	cli.Parse()
