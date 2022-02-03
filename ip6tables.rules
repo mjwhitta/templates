@@ -28,6 +28,7 @@
 # -A FORWARD -m conntrack --ctstate INVALID -j DROP
 # Otherwise reject
 #-A FORWARD -j HARDPASS
+# Reject appropriately for each protocol
 -A HARDPASS -p tcp -j REJECT --reject-with tcp-reset
 -A HARDPASS -p udp -j REJECT --reject-with icmp6-port-unreachable
 -A HARDPASS -j REJECT --reject-with icmp6-port-unreachable

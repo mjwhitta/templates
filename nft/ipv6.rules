@@ -1,0 +1,57 @@
+#!/usr/bin/nft -f
+
+## IPv6 filter ##
+add table ip6 filter
+add chain ip6 filter INPUT { type filter hook input priority 0; policy drop; }
+add chain ip6 filter FORWARD { type filter hook forward priority 0; policy drop; }
+add chain ip6 filter OUTPUT { type filter hook output priority 0; policy accept; }
+add chain ip6 filter HARDPASS
+add chain ip6 filter SYNFLOOD
+add chain ip6 filter TCP
+add chain ip6 filter UDP
+# Allow loopback
+add rule ip6 filter INPUT iifname "lo" counter accept
+# Allow established
+add rule ip6 filter INPUT ct state established,related counter accept
+# Drop invalid
+add rule ip6 filter INPUT ct state invalid counter drop
+# Allow ping
+add rule ip6 filter INPUT meta l4proto ipv6-icmp icmpv6 type echo-request ct state new counter accept
+# Allow IPv6 ICMP for router advertisements (TODO add needed subnets)
+add rule ip6 filter INPUT meta l4proto ipv6-icmp ip6 saddr fe80::/10 counter accept
+# Jump to tcp table for new tcp
+add rule ip6 filter INPUT tcp flags & (ack|fin|rst|syn) == syn ct state new counter jump TCP
+# Jump to udp table for new udp
+add rule ip6 filter INPUT meta l4proto udp ct state new counter jump UDP
+# Otherwise reject
+add rule ip6 filter INPUT counter jump HARDPASS
+# Allow established
+#add rule ip6 filter FORWARD ct status dnat counter accept
+# Drop invalid
+#add rule ip6 filter FORWARD ct state invalid counter drop
+# Otherwise reject
+#add rule ip6 filter FORWARD counter jump HARDPASS
+# Reject appropriately for each protocol
+add rule ip6 filter HARDPASS meta l4proto tcp counter reject with tcp reset
+add rule ip6 filter HARDPASS meta l4proto udp counter reject
+add rule ip6 filter HARDPASS counter reject
+# Protect from SYN flood
+add rule ip6 filter SYNFLOOD limit rate 64/minute burst 64 packets counter return
+add rule ip6 filter SYNFLOOD counter jump HARDPASS
+# Check for SYN flood
+add rule ip6 filter TCP counter jump SYNFLOOD
+# Allow:
+# - SSH (22)
+add rule ip6 filter TCP meta l4proto tcp tcp dport 22 counter accept
+# Allow:
+# - OpenVPN (1194)
+#add rule ip6 filter UDP meta l4proto udp udp dport 1194 counter accept
+# Allow DHCPv6 (TODO add needed subnets)
+add rule ip6 filter UDP ip6 saddr fe80::/10 udp dport 546 ct state new  counter accept
+
+## IPv6 raw ##
+add table ip6 raw
+add chain ip6 raw PREROUTING { type filter hook prerouting priority -300; policy accept; }
+add chain ip6 raw OUTPUT { type filter hook output priority -300; policy accept; }
+add rule ip6 raw PREROUTING fib saddr . iif oif != 0 counter accept
+add rule ip6 raw PREROUTING counter drop
