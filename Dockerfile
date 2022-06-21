@@ -1,7 +1,8 @@
 FROM alpine:latest
 
 # Install bash b/c it's better
-RUN apk update && apk add bash
+RUN apk --no-cache --update add bash && \
+    rm -fr /tmp/* /var/{cache/apk,tmp}/*
 SHELL ["/bin/bash", "-c"]
 
 # Add scripts
@@ -11,8 +12,8 @@ ADD dockerentry TODO /
 # 2. Clean up unnecessary files and packages
 RUN set -o pipefail && \
     ( \
-        apk upgrade && \
-        apk add \
+        apk --no-cache --update upgrade && \
+        apk --no-cache --update add \
             curl \
             grep \
             less \
@@ -20,7 +21,7 @@ RUN set -o pipefail && \
             sudo \
             TODO \
     ) && ( \
-        rm -rf /tmp/* /var/{cache/apk,tmp}/* \
+        rm -fr /tmp/* /var/{cache/apk,tmp}/* \
     )
 
 # Set entrypoint
