@@ -1,11 +1,12 @@
 #!/usr/bin/env expect
 
 proc usage {status} {
-    puts "./script.exp \[OPTIONS\]"
+    puts "Usage: ./script.exp \[OPTIONS\]"
     puts ""
-    puts "TODO"
+    puts "DESCRIPTION"
+    puts "    TODO."
     puts ""
-    puts "Options:"
+    puts "OPTIONS"
     puts "    -f, --flag         Example flag"
     puts "    -f, --flag=FLAG    Example for storing cli arg"
     puts "    -h, --help         Display this help message"
