@@ -8,26 +8,19 @@ gname="${DKR_GNAME:-user}"
 uid="${DKR_UID:-1000}"
 uname="${DKR_UNAME:-user}"
 
-# Does user with UID already exist?
-old_uid="$(id -nu "$uid" 2>/dev/null)"
-
 # If root or UID of 0 provided, just run command
 if [[ $(id -u) -ne 0 ]] || [[ $uid -eq 0 ]]; then
     exec "$@"
 fi
 
-# Create group if it doesn't exist
-groupadd -f "$gname"
-groupmod -g "$gid" -o "$gname" 2>/dev/null
+# Create group, if it doesn't exist
+groupadd -f -g "$gid" -o "$gname" &>/dev/null
+groupmod -g "$gid" -o "$gname" &>/dev/null
 
-# Create user if they don't exist
-if [[ -z $old_uid ]]; then
-    useradd -d /home/user -g "$gid" -mou "$uid" "$uname" 2>/dev/null
-else
-    usermod -d /home/user -g "$gid" -l "$uname" -m "$old_uid" \
-        2>/dev/null
-fi
-chown -R "$uname":"$gname" /home/user
+# Create user, if they don't exist
+useradd -d /home/user -g "$gid" -mou "$uid" "$uname" &>/dev/null
+usermod -d /home/user -g "$gid" -mou "$uid" "$uname" &>/dev/null
+chown -R "$uid":"$gid" /home/user
 
 # Sudo (a few different ways)
 groupadd -f sudo
@@ -43,7 +36,7 @@ cmd="$*"
 
 # Run command as specified user
 export HOME="/home/user"
-export USER="user"
+export USER="$uname"
 
 if [[ -n $(command -v sudo) ]]; then
     sudo -E -u "$uname" $cmd
