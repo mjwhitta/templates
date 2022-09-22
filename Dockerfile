@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-# Install bash b/c it's better
+# Use bash b/c it's better
 RUN apk --no-cache --update add bash && \
     rm -fr /tmp/* /var/{cache/apk,tmp}/*
 SHELL ["/bin/bash", "-c"]
