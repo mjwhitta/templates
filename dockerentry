@@ -39,6 +39,7 @@ export HOME="/home/user"
 export USER="$uname"
 
 if [[ -n $(command -v sudo) ]]; then
+    # shellcheck disable=SC2086
     sudo -E -u "$uname" $cmd
 else
     su -c "$cmd" -m "$uname"
