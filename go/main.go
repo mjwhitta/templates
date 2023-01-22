@@ -1,8 +1,8 @@
 package main
 
 import (
-	"gitlab.com/mjwhitta/cli"
-	"gitlab.com/mjwhitta/log"
+	"github.com/mjwhitta/cli"
+	"github.com/mjwhitta/log"
 )
 
 func main() {
