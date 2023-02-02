@@ -3,13 +3,16 @@
 import argparse
 import sys
 
-def main(options):
-    pass
+def main(cli):
+    print(cli.t)
+    print(cli.todo)
+    print(cli.arg1)
 
 def parse():
     parser = argparse.ArgumentParser(
         add_help=False,
-        description=""
+        description="TODO",
+        usage=sys.argv[0] + " [OPTIONS] [todo]"
     )
     parser.add_argument(
         "-h",
@@ -18,9 +21,13 @@ def parse():
         help="Display this help message"
     )
     parser.add_argument(
-        "-s",
-        "--store",
-        help="Example for storing cli arg"
+        "-t",
+        action="store_true",
+        help="Example short flag"
+    )
+    parser.add_argument(
+        "--todo",
+        help="Example long flag"
     )
     parser.add_argument(
         "arg1",
@@ -28,18 +35,14 @@ def parse():
         metavar="arg1",
         nargs="?"
     )
-    args = parser.parse_args()
+    cli = parser.parse_args()
 
-    options = {}
-
-    if (args.help):
+    if (cli.help):
         parser.print_help()
         sys.exit(0)
-    elif (args.store):
-        options["store"] = args.store
 
-    return options
+    return cli
 
 if __name__ == "__main__":
-    options = parse()
-    main(options)
+    cli = parse()
+    main(cli)
