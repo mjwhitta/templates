@@ -5,9 +5,6 @@ RUN apk --no-cache --update add bash && \
     rm -fr /tmp/* /var/{cache/apk,tmp}/*
 SHELL ["/bin/bash", "-c"]
 
-# Add scripts
-ADD dockerentry TODO /
-
 # 1. Install dependencies
 # 2. Clean up unnecessary files and packages
 RUN set -o pipefail && \
@@ -24,6 +21,11 @@ RUN set -o pipefail && \
         rm -fr /tmp/* /var/{cache/apk,tmp}/* \
     )
 
-# Set entrypoint
 WORKDIR /TODO
+
+# Add scripts
+ADD root/dockerentry root/TODO /
+RUN chmod 755 /dockerentry /TODO
+
+# Set entrypoint
 ENTRYPOINT ["/dockerentry"]
