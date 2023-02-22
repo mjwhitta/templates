@@ -2,7 +2,7 @@ FROM alpine:latest
 
 # Use bash b/c it's better
 RUN apk --no-cache --update add bash && \
-    rm -fr /tmp/* /var/{cache/apk,tmp}/*
+    rm -f -r /tmp/* /var/{cache/apk,tmp}/*
 SHELL ["/bin/bash", "-c"]
 
 # 1. Install dependencies
@@ -18,14 +18,14 @@ RUN set -o pipefail && \
             sudo \
             TODO \
     ) && ( \
-        rm -fr /tmp/* /var/{cache/apk,tmp}/* \
+        rm -f -r /root/{.cache,go} /tmp/* /var/{cache/apk,tmp}/* \
     )
-
-WORKDIR /TODO
 
 # Add scripts
 ADD root/dockerentry root/TODO /
 RUN chmod 755 /dockerentry /TODO
+
+WORKDIR /TODO
 
 # Set entrypoint
 ENTRYPOINT ["/dockerentry"]
