@@ -50,7 +50,8 @@ check_resume_file() {
         while :; do
             # Prompt whether to overwrite or resume
             local a
-            read -n 1 -p "Would you like to resume [y/n/q/c]: " -rs a
+            read -n 1 -p "Would you like to resume [y/n/q/c]: " -r \
+                -s a
             echo
 
             case "$a" in
@@ -78,14 +79,14 @@ clean() {
     show_cursor
     exit "${1:-0}"
 }
-hide_cursor() { echo -en "\e[?25l"; }
+hide_cursor() { echo -e -n "\e[?25l"; }
 json_get() {
     if [[ -z $json ]] || [[ ! -f "$json" ]]; then
         return
     fi
-    jq -cr ".$*" "$json" | sed -r "s/^null$//g"
+    jq -c -M -r -S ".$*" "$json" | sed -r "s/^null$//g"
 }
-show_cursor() { echo -en "\e[?25h"; }
+show_cursor() { echo -e -n "\e[?25h"; }
 ### Parallel helpers end
 
 read_resume_file() {
@@ -177,7 +178,7 @@ fi
 
 # Cite if needed
 if [[ -n $parallel ]] && [[ ! -f "$HOME/.parallel/will-cite" ]]; then
-    pvers="$(parallel --version | grep -ioPs "parallel \K\d+")"
+    pvers="$(parallel --version | grep -i -o -P -s "parallel \K\d+")"
     if [[ $pvers -gt 20161222 ]] && [[ $pvers -lt 20181122 ]]; then
         mkdir -p "$HOME/.parallel"
         parallel --citation
@@ -247,12 +248,12 @@ if [[ -n $parallel ]]; then
     # If more than one dataset, cat and pipe to parallel
     parallel -a "$dataset" --bar --joblog ${resume:++}"$joblog" --lb \
         -P "$threads" -r $resume "$script" {}
-    [[ -n $verbose ]] || echo -en "\e[1A\e[K" >&2
+    [[ -n $verbose ]] || echo -e -n "\e[1A\e[K" >&2
 else
     count="1"
     while read -r data; do
         echo -e "\r\e[K" >&2
-        echo -en "${color:+\e[37m}[$count/$total]\e[0m\e[K\e[1A" >&2
+        echo -e -n "${color:+\e[37m}[$count/$total]\e[0m\e[K\e[1A" >&2
         $script "$data"
         ((count += 1))
     done <"$dataset"; unset data
