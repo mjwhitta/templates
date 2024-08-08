@@ -9,7 +9,7 @@ func main() {
 	defer func() {
 		if r := recover(); r != nil {
 			if flags.verbose {
-				panic(r.(error).Error())
+				panic(r.(error))
 			}
 			log.ErrX(Exception, r.(error).Error())
 		}
