@@ -83,11 +83,12 @@ func validate() {
 	}
 
 	// Validate cli flags
-	if cli.NArg() < 2 {
+	switch {
+	case cli.NArg() < 2:
 		cli.Usage(MissingArgument)
-	} else if cli.NArg() == 2 {
+	case cli.NArg() == 2:
 		// TODO
-	} else if cli.NArg() > 2 {
+	case cli.NArg() > 2:
 		cli.Usage(ExtraArgument)
 	}
 }

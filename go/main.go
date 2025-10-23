@@ -8,10 +8,20 @@ import (
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
-			if flags.verbose {
-				panic(r.(error))
+			switch r := r.(type) {
+			case error:
+				if flags.verbose {
+					panic(r)
+				}
+
+				log.ErrX(Exception, r.Error())
+			case string:
+				if flags.verbose {
+					panic(r)
+				}
+
+				log.ErrX(Exception, r)
 			}
-			log.ErrX(Exception, r.(error).Error())
 		}
 	}()
 
