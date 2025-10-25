@@ -31,10 +31,7 @@ func init() {
 	// Configure cli package
 	cli.Align = true // Defaults to false
 	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
-	cli.Banner = hl.Sprintf(
-		"%s [OPTIONS] <todo1> <todo2>",
-		os.Args[0],
-	)
+	cli.Banner = os.Args[0] + " [OPTIONS] <todo1> <todo2>"
 	cli.BugEmail = "TODO.bugs@whitta.dev"
 	cli.ExitStatus(
 		"Normally the exit status is 0. In the event of an error the",
