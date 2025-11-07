@@ -33,6 +33,7 @@ func init() {
 	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
 	cli.Banner = os.Args[0] + " [OPTIONS] <todo1> <todo2>"
 	cli.BugEmail = "TODO.bugs@whitta.dev"
+
 	cli.ExitStatus(
 		"Normally the exit status is 0. In the event of an error the",
 		"exit status will be one of the below:\n\n",
@@ -44,6 +45,7 @@ func init() {
 		hl.Sprintf("  %d: Exception", Exception),
 	)
 	cli.Info("TODO")
+
 	// cli.MaxWidth = 80 // Defaults to 80
 	cli.SeeAlso = []string{"TODO"}
 	// cli.TabWidth = 4 // Defaults to 4
@@ -81,11 +83,11 @@ func validate() {
 
 	// Validate cli flags
 	switch {
-	case cli.NArg() < 2:
+	case cli.NArg() < 2: //nolint:mnd // 2 cli args
 		cli.Usage(MissingArgument)
-	case cli.NArg() == 2:
-		// TODO
-	case cli.NArg() > 2:
+	case cli.NArg() == 2: //nolint:mnd // 2 cli args
+	// TODO
+	case cli.NArg() > 2: //nolint:mnd // 2 cli args
 		cli.Usage(ExtraArgument)
 	}
 }
