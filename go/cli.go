@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/mjwhitta/cli"
 	hl "github.com/mjwhitta/hilighter"
@@ -31,7 +32,8 @@ func init() {
 	// Configure cli package
 	cli.Align = true // Defaults to false
 	cli.Authors = []string{"Miles Whittaker <mj@whitta.dev>"}
-	cli.Banner = os.Args[0] + " [OPTIONS] <todo1> <todo2>"
+	cli.Banner = "" +
+		filepath.Base(os.Args[0]) + " [OPTIONS] <todo1> <todo2>"
 	cli.BugEmail = "TODO.bugs@whitta.dev"
 
 	cli.ExitStatus(
@@ -77,7 +79,11 @@ func validate() {
 
 	// Short circuit, if version was requested
 	if flags.version {
-		hl.Printf("TODO version %s\n", Version)
+		hl.Printf(
+			"%s version %s\n",
+			filepath.Base(os.Args[0]),
+			Version,
+		)
 		os.Exit(Good)
 	}
 
