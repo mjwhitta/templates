@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -39,12 +40,12 @@ func init() {
 	cli.ExitStatus(
 		"Normally the exit status is 0. In the event of an error the",
 		"exit status will be one of the below:\n\n",
-		hl.Sprintf("  %d: Invalid option\n", InvalidOption),
-		hl.Sprintf("  %d: Missing option\n", MissingOption),
-		hl.Sprintf("  %d: Invalid argument\n", InvalidArgument),
-		hl.Sprintf("  %d: Missing argument\n", MissingArgument),
-		hl.Sprintf("  %d: Extra argument\n", ExtraArgument),
-		hl.Sprintf("  %d: Exception", Exception),
+		fmt.Sprintf("  %d: Invalid option\n", InvalidOption),
+		fmt.Sprintf("  %d: Missing option\n", MissingOption),
+		fmt.Sprintf("  %d: Invalid argument\n", InvalidArgument),
+		fmt.Sprintf("  %d: Missing argument\n", MissingArgument),
+		fmt.Sprintf("  %d: Extra argument\n", ExtraArgument),
+		fmt.Sprintf("  %d: Exception", Exception),
 	)
 	cli.Info("TODO")
 
@@ -79,11 +80,7 @@ func validate() {
 
 	// Short circuit, if version was requested
 	if flags.version {
-		hl.Printf(
-			"%s version %s\n",
-			filepath.Base(os.Args[0]),
-			Version,
-		)
+		fmt.Println(filepath.Base(os.Args[0]) + " version " + Version)
 		os.Exit(Good)
 	}
 
